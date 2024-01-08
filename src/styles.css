@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+html, body { height: 100%; background-color: gray; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+::-webkit-scrollbar{
+    width: 3px;
+    background-color: #504e70;
+    border-radius: 15px;
+}
+
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #c0c0c0b6; /* Set the color of the thumb */
+    border-radius: 6px; /* Set the border radius of the thumb */
+  }
