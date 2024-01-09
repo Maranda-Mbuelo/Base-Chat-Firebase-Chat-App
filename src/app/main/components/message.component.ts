@@ -115,7 +115,7 @@ export class MessageComponent implements OnInit {
     };
 
     // Send the message
-    this.firebaseService.addMessage(message).then(() => {
+    this.firebaseService.addMessage(message, senderId, receiverId).then(() => {
       // Message sent successfully, now retrieve the messages
       this.firebaseService.getMessagesByUserId(senderId, receiverId).subscribe(
         (messages) => {

@@ -68,17 +68,16 @@ export class AuthService {
         };
         
         this.firebaseService.addUser(user)
-          .then(() => {
-            console.log('User added successfully');
-          })
+          .then((userId) => {
+            console.log('User added successfully with ID:', userId);
+            // Introduce a delay of 2 seconds before navigating
+            setTimeout(() => {
+              this.router.navigate(['/basic/setup/', userId]);
+            }, 1000);
+            })
           .catch((error) => {
             console.error('Error adding user:', error);
           });
-        
-        // Introduce a delay of 2 seconds before navigating
-        setTimeout(() => {
-          this.router.navigate(['/firebaseapp/start-up', this.userId]);
-        }, 2000);
       })
       .catch((error) => {
         const errorCode = error.code;

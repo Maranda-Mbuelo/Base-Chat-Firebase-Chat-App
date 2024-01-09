@@ -8,6 +8,8 @@ import { MessagesComponent } from './components/messages.component';
 import { MessageComponent } from './components/message.component';
 import { AsideComponent } from './components/aside.component';
 import { SetupComponent } from './components/setup.component';
+import { DocumentationComponent } from './components/documentation.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,11 +19,14 @@ import { SetupComponent } from './components/setup.component';
     MessagesComponent,
     MessageComponent,
     AsideComponent,
-    SetupComponent
+    SetupComponent,
+    DocumentationComponent
   ],
   imports: [
     CommonModule,
     MainRoutingModule,
+    FormsModule,
+    ReactiveFormsModule
     
   ]
 })
