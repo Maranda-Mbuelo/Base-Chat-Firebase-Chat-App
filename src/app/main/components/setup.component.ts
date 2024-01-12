@@ -159,13 +159,11 @@ export class SetupComponent implements OnInit {
   }
 
   isFormComplete(): boolean {
-    // Implement your logic to check if the required information is filled
     // Return true if complete, false otherwise
     return this.username.trim() !== '' && this.isDarkMode !== null;
   }
 
   onContinueClick() {
-    // Handle the continue button click
     if (this.isFormComplete()) {
       // Proceed with the next step or any desired action
       console.log('Continue button clicked!');

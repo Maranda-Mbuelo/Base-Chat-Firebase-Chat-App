@@ -1,8 +1,8 @@
-import { Observable, map } from 'rxjs';
+import { Observable, from, map } from 'rxjs';
 import { IMessage } from './../interfaces/message.model';
 import { IUser } from './../interfaces/user.model';
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 
 @Injectable({
@@ -24,21 +24,40 @@ export class FirebaseService {
 
   getUsers() {
     const collectionDatabase = collection(this.firestore, 'users');
-    return collectionData(collectionDatabase, { idField: 'id' });
+    return from(collectionData(collectionDatabase, { idField: 'id' }));
   }
 
-  getUserById(userId: string): Promise<IUser | null> {
-    const userDocRef: DocumentReference<DocumentData> = doc(this.firestore, 'users', userId);
+  // getUserById(userId: string): Promise<IUser | null> {
+  //   const userDocRef: DocumentReference<DocumentData> = doc(this.firestore, 'users', userId);
 
-    return getDoc(userDocRef).then((userSnapshot) => {
-      // If the user exists, return the user data
+  //   return getDoc(userDocRef).then((userSnapshot) => {
+  //     // If the user exists, return the user data
+  //     if (userSnapshot.exists()) {
+  //       return userSnapshot.data() as IUser;
+  //     } else {
+  //       // If the user does not exist, return null
+  //       return null;
+  //     }
+  //   });
+  // }
+
+  async getUserById(userId: string): Promise<IUser | null> {
+    const userDocRef = doc(collection(this.firestore, 'users'), userId);
+
+    try {
+      const userSnapshot = await getDoc(userDocRef);
+
       if (userSnapshot.exists()) {
-        return userSnapshot.data() as IUser;
+        const userData = userSnapshot.data() as IUser;
+        return userData;
       } else {
-        // If the user does not exist, return null
+        console.error('User not found');
         return null;
       }
-    });
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
   }
 
   updateUser(id: string, data: Partial<IUser>) {
@@ -62,6 +81,27 @@ export class FirebaseService {
         return userData.email;
       } else {
         console.error('User not found');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  }
+
+  async getUserIdByEmail(email: string): Promise<string | null> {
+    const collectionDatabase = collection(this.firestore, 'users');
+    const q = query(collectionDatabase, where('email', '==', email));
+  
+    try {
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        // Assuming there is only one user with a given email
+        const userDoc = querySnapshot.docs[0];
+        return userDoc.id;
+      } else {
+        console.error('User not found from email method');
         return null;
       }
     } catch (error) {

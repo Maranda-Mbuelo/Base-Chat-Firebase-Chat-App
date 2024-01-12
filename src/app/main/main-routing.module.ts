@@ -7,6 +7,8 @@ import { MessagesComponent } from './components/messages.component';
 import { MessageComponent } from './components/message.component';
 import { SetupComponent } from './components/setup.component';
 import { AuthGuard } from './authentication/auth.guard';
+import { ProfileComponent } from './components/profile.component';
+import { UsersComponent } from './components/users.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -14,8 +16,10 @@ const routes: Routes = [
   { path: 'firebaseapp', component: LayoutComponent, children: [
     { path: '', redirectTo: 'start-up', pathMatch: 'full'},
     { path: 'start-up/:userId', component: StartUpComponent,  },
-    { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] },
+    { path: 'messages', component: MessagesComponent },
+    { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'message/:userId', component: MessageComponent, canActivate: [AuthGuard] },
+    { path: 'users', component: UsersComponent },
   ]},
   {path: '',  loadChildren:() => import('./authentication/authentication.module').then(module => module.AuthenticationModule)},
 ];

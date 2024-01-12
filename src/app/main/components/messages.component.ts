@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-messages',
   template: `
-<div class="bg-white mt-12 p-6 sm:p-8 rounded-md w-full">
+<div class="bg-white mt-12 p-6 sm:p-8 rounded-md h-screen w-full">
   <div class="flex flex-col sm:flex-row items-center justify-between pb-4">
     <div class="mb-2 sm:mb-0">
       <h2 class="text-gray-600 font-semibold text-lg">Friends</h2>

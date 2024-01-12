@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +11,8 @@ import { AsideComponent } from './components/aside.component';
 import { SetupComponent } from './components/setup.component';
 import { DocumentationComponent } from './components/documentation.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProfileComponent } from './components/profile.component';
+import { UsersComponent } from './components/users.component';
 
 
 @NgModule({
@@ -20,13 +23,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MessageComponent,
     AsideComponent,
     SetupComponent,
-    DocumentationComponent
+    DocumentationComponent,
+    ProfileComponent,
+    UsersComponent
   ],
   imports: [
     CommonModule,
     MainRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
     
   ]
 })

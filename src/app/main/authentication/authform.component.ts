@@ -1,7 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoginForm, SignUpForm } from '../interfaces/user.model';
 import { AuthService } from '../services/auth.service';
+import { TypewriterService } from '../services/typewritter.service';
 
 @Component({
   selector: 'app-authform',
@@ -11,8 +12,8 @@ import { AuthService } from '../services/auth.service';
         <div class="lg:flex w-1/2 hidden bg-gray-500 bg-no-repeat bg-cover relative items-center" style="background-image: url(https://images.unsplash.com/photo-1529891934443-f92f7cc212a8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVkJTIwYW5kJTIwYmx1ZXxlbnwwfHwwfHx8MA%3D%3D);">
             <div class="absolute bg-black opacity-60 inset-0 z-0"></div>
             <div class="w-full px-24 z-10">
-                <h1 class="text-5xl font-bold text-left tracking-wide">Welcome back to Basechat!</h1>
-                <p class="text-3xl my-4">Return to the familiar whispers. Sign in, and let the conversations echo through time.</p>
+                <h1 class="text-5xl font-bold text-left tracking-wide firstParagraph">Welcome back to Basechat!</h1>
+                <p class="text-3xl my-4 text-gray-300">Return to the familiar whispers. Sign in, and let the conversations echo through time.</p>
                 <button (click)="toggleFormToggler()" class="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900 transition-all">Create New Acoount</button>
             </div>
             <div class="bottom-0 absolute p-4 text-center right-0 left-0 flex justify-center space-x-4">
@@ -46,13 +47,13 @@ import { AuthService } from '../services/auth.service';
                 </p>
                 <form #myForm="ngForm" (ngSubmit)="loginSubmit(myForm.value)" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
                     <div class="pb-2 pt-4">
-                        <input type="email" name="email" placeholder="Email" ngModel class="block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none">
+                        <input type="email" name="email" placeholder="Email" ngModel class="stPlaceholder block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none">
                     </div>
                     <div class="pb-2 pt-4">
-                        <input type="password" name="password" placeholder="Password" ngModel class="block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none focus:border-none">
+                        <input type="password" name="password" placeholder="Password" ngModel class="sndPlaceholder block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none focus:border-none">
                     </div>
                     <div class="text-right text-gray-400 hover:underline hover:text-gray-100">
-                        <a href="#">Forgot your password?</a>
+                        <a href="#" class="stLink"></a>
                     </div>
                     <div class="px-4 pb-2 pt-4 flex flex-col gap-4">
                         <button type="submit" [disabled]="myForm.form.invalid" class="uppercase block w-full p-4 text-lg rounded-sm bg-transparent shadow-lg shadow-white text-gray-500 lg:bg-gray-300 lg:text-gray-700 border border-white hover:bg-gray-600 focus:outline-none">{{ loading ? 'Loading...' : 'Log In' }}</button>
@@ -83,7 +84,7 @@ import { AuthService } from '../services/auth.service';
             <div class="absolute bg-black opacity-60 inset-0 z-0"></div>
             <div class="w-full px-24 z-10">
                 <h1 class="text-5xl font-bold text-left tracking-wide">Welcome to Basechat</h1>
-                <p class="text-3xl my-4">Dive into a realm of mystery and joy. Join in, log in, and let the adventure begin!</p>
+                <p class="text-3xl my-4 text-gray-300">Dive into a realm of mystery and joy. Join in, log in, and let the adventure begin!</p>
                 <button (click)="toggleFormToggler()" class="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400 dark:focus:ring-yellow-900 transition-all">Log In To Your Account</button>
             </div>
             <div class="bottom-0 absolute p-4 text-center right-0 left-0 flex justify-center space-x-4">
@@ -151,16 +152,16 @@ import { AuthService } from '../services/auth.service';
   styles: [
   ]
 })
-export class AuthformComponent implements OnDestroy {
+export class AuthformComponent implements AfterViewInit, OnDestroy {
 
   loading: boolean = false;
   passwordMatched: boolean = true;
-  formToggler: boolean = false;
+  formToggler: boolean = true;
   popupType: 'error' | 'success' | null = null;
   popupMessage: string = '';
   private loadingSubscription!: Subscription;
 
-  constructor(private authService: AuthService){
+  constructor(private authService: AuthService, private typewritter: TypewriterService){
     this.loadingSubscription = this.authService.loading$.subscribe((loading) => {
       this.loading = loading;
     });
@@ -174,8 +175,16 @@ export class AuthformComponent implements OnDestroy {
     });
   }
 
+  ngAfterViewInit(): void {
+    this.typewritter.startTypewriter('.firstParagraph', ['Welcome back to Basechat!', 'We\'re happy you\'re back again', 'Do not forget to share with all your friends to keep the breeze out of this little space'], true);
+    this.typewritter.startTypewriter('.stLink', ['Forgot your password?'], false);
+    this.typewritter.placeholderWriter('.stPlaceholder', ['Email', 'Email: example@gmail.com']);
+    this.typewritter.placeholderWriter('.sndPlaceholder', ['Password']);
+  }
+
   ngOnDestroy(): void {
     this.loadingSubscription.unsubscribe();
+    this.typewritter.stopAllTypewriters();
   }
 
   loginSubmit(formData: LoginForm){

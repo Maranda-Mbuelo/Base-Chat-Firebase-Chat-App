@@ -15,6 +15,7 @@ export class AuthService {
   private loadingSubject = new Subject<boolean>();
   public loading$ = this.loadingSubject.asObservable();
   userId: string | null = null;
+  user!: IUser;
   private popupTypeSubject = new BehaviorSubject<string>('');
   public popupType$ = this.popupTypeSubject.asObservable();
   private popupMessageSubject = new BehaviorSubject<string>('');
@@ -25,15 +26,16 @@ export class AuthService {
     this.loadingSubject.next(true); // Start loading
     const auth = getAuth();
     signInWithEmailAndPassword(auth, form.email.toLowerCase(), form.password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         this.userId = userCredential.user.uid;
         this.isAuthenticated = true;
         this.popupTypeSubject.next('success');
         this.popupMessageSubject.next('You are getting Redirectedto Star up Page');
+        this.userId = await this.firebaseService.getUserIdByEmail(form.email);
         // Here i am delaying the route so that user can read the message!!!!!!
         setTimeout(() => {
           this.router.navigate(['/firebaseapp/start-up', this.userId]);
-        }, 2000);
+        }, 500);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -69,6 +71,7 @@ export class AuthService {
         
         this.firebaseService.addUser(user)
           .then((userId) => {
+            this.userId = userId;
             console.log('User added successfully with ID:', userId);
             // Introduce a delay of 2 seconds before navigating
             setTimeout(() => {

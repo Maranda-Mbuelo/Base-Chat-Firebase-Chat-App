@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "public",
+    "public": "dist/firebase-chat-app",
     "ignore": [
       "firebase.json",
       "**/.*",

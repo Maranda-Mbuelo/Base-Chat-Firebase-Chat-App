@@ -13,7 +13,25 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 
-  ::-webkit-scrollbar-thumb {
-    background-color: #c0c0c0b6; /* Set the color of the thumb */
-    border-radius: 6px; /* Set the border radius of the thumb */
-  }
+::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0b6; /* Set the color of the thumb */
+  border-radius: 6px; /* Set the border radius of the thumb */
+}
+
+input:focus{
+  outline: none!important;
+  border: none!important;
+  border: 0px;
+  border-radius: 12px;
+  border-color: transparent!important;
+}
+
+input::before:focus{
+  border: 0px;
+  border-color: transparent!important;
+}
+
+input::after:focus{
+  border: 0px;
+  border-color: transparent!important;
+}

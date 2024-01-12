@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage())
+    provideStorage(() => getStorage()),
   ],
   providers: [],
   bootstrap: [AppComponent]
