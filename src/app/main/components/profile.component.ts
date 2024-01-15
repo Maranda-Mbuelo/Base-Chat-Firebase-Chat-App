@@ -19,7 +19,7 @@ import { AuthService } from '../services/auth.service';
       </svg>
     </div>
   </section>
-  <section class="relative py-16 bg-blueGray-200">
+  <section *ngIf="user !== null" class="relative py-16 bg-blueGray-200">
     <div class="container mx-auto px-4">
       <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
         <div class="px-6">
@@ -75,6 +75,7 @@ import { AuthService } from '../services/auth.service';
         </div>
       </div>
     </div>
+  </section>
   `,
   styles: [
   ]
@@ -84,7 +85,8 @@ export class ProfileComponent {
   user!: IUser;
 
   constructor(private firebaseService: FirebaseService, private authService: AuthService){
-    var id = this.authService.userId;
+    // var id = this.authService.userId;
+    var id = 'f9qY9yEHwrLIcNg25Xop';
     if(id){
       this.firebaseService.getUserById(id).then((user) => {
         (user)? this.user = user : console.error('User not Found')

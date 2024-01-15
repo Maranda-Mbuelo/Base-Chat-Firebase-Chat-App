@@ -1,5 +1,5 @@
 import { Observable, from, map } from 'rxjs';
-import { IMessage } from './../interfaces/message.model';
+import { IGetMessages, IMessage } from './../interfaces/message.model';
 import { IUser } from './../interfaces/user.model';
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
@@ -130,20 +130,20 @@ export class FirebaseService {
   // Messages
 
   addMessage(message: IMessage, senderId: string, receiverId: string){
-    const collectionDatabase = collection(this.firestore, 'messages/' + senderId + receiverId);
+    const collectionDatabase = collection(this.firestore, 'messages/' + senderId + '/' + receiverId);
     return addDoc(collectionDatabase, message);
   }
 
   getMessagesByUserId(senderId: string, receiverId: string): Observable<IMessage[]> {
-    const collectionDatabase = collection(this.firestore, 'messages/' + senderId + receiverId);
+    const collectionDatabase = collection(this.firestore, 'messages/' + senderId + '/' + receiverId);
     
     // Fetch all messages and filter on the client side
     return collectionData(collectionDatabase, { idField: 'id' }).pipe(
       map((messages: (DocumentData | (DocumentData & { id: string; }))[]) => {
         // Explicitly cast each message to IMessage
-        return messages.map(message => message as IMessage);
+        return messages.map(message => message as IGetMessages);
       }),
-      map((messages: IMessage[]) => {
+      map((messages: IGetMessages[]) => {
         return messages.filter(message => message.senderId === senderId && message.receiverId === receiverId);
       })
     );
