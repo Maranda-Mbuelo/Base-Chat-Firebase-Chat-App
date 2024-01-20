@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-messages',
@@ -77,6 +78,9 @@ import { Component } from '@angular/core';
   styles: [
   ]
 })
-export class MessagesComponent {
+export class MessagesComponent implements OnInit {
 
+  ngOnInit(): void {
+    initFlowbite();
+  }
 }

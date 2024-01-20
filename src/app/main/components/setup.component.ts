@@ -1,62 +1,89 @@
 import { getAuth, onAuthStateChanged  } from 'firebase/auth';
 import { FirebaseService } from './../services/firebase.service';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { IUser } from '../interfaces/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { initFlowbite, initModals, initPopovers } from 'flowbite';
 
 @Component({
   selector: 'app-setup',
   template: `
-<div class="bg-white min-h-[100dvh] w-full flex justify-center items-center">
-  <div class="max-w-[70%] w-[60%] p-6 bg-gray-100 rounded-md shadow-md">
-    <h2 class="text-2xl font-semibold mb-4">Welcome to BaseChat!</h2>
-    <!-- Display the uploaded image if available -->
-    <div *ngIf="profilePic" class="mt-2">
-      <img [src]="profilePic" alt="Profile" class="rounded-full h-16 w-16 object-cover">
-    </div>
-
-    <!-- Username -->
-    <div class="mb-4">
-      <label for="username" class="block text-sm font-medium text-gray-700">Choose your desired username:</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" placeholder="Ex: Mbuelo Maranda" class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring focus:ring-blue-200 focus:border-blue-500">
-    </div>
-
-    <!-- Username -->
-    <div class="mb-4">
-      <label for="username" class="block text-sm font-medium text-gray-700">Tell us a bit about yourself:</label>
-      <input type="text" id="abot" [(ngModel)]="about" name="about" placeholder="Ex: I'm Mbuelo Maranda, from hillcrest" class="mt-1 p-2 block w-full rounded-md border-gray-300 focus:ring focus:ring-blue-200 focus:border-blue-500">
-    </div>
-
-    <!-- Dark/Light Mode Preference -->
-    <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700">Choose your preferred mode:</label>
-      <div class="mt-1">
-        <label class="inline-flex items-center">
-          <input type="radio" [(ngModel)]="isDarkMode" name="modePreference" value="true" class="form-radio text-blue-500">
-          <span class="ml-2">Dark Mode</span>
-        </label>
-        <label class="inline-flex items-center ml-6">
-          <input type="radio" [(ngModel)]="isDarkMode" name="modePreference" value="false" class="form-radio text-blue-500">
-          <span class="ml-2">Light Mode</span>
-        </label>
-      </div>
-    </div>
-
-    <!-- Continue Button -->
-    <button (click)="toggleModal()" type="button" data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="mb-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md">Upload Profile Picture</button>
-    <button (click)="onContinueClick()" type="button" class="w-full bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md">Continue</button>
+<div class="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+  <div class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]" aria-hidden="true">
+    <div class="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-gray-300 to-gray-600 opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
   </div>
+  <div class="absolute inset-x-0 bottom-[10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:bottom-[20rem]" aria-hidden="true">
+    <div class="relative right-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[-30deg] bg-gradient-to-bl from-gray-500 to-gray-800 opacity-30 sm:right-[calc(90%-40rem)] sm:w-[72.1875rem]" style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+  </div>
+
+  <div class="mx-auto max-w-2xl text-center">
+    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-700 md:text-5xl lg:text-6xl dark:text-white">Welcome to <span class="text-indigo-500 dark:text-gray-700">Base Chat</span> initial set up page.</h1>
+    <p class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400">Please continue filling all the required informations, for better use and good experience</p>
+  </div>
+  <form #myForm="ngForm" (ngSubmit)="onContinueClick(myForm.value)" class="mx-auto mt-16 max-w-xl sm:mt-20">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+      <div>
+        <label for="first-name" class="block text-sm font-semibold leading-6 text-black">First name</label>
+        <div class="mt-2.5">
+          <input type="text" name="firstname" ngModel autocomplete="given-name" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm shadow-gray-500 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6">
+        </div>
+      </div>
+      <div>
+        <label for="last-name" class="block text-sm font-semibold leading-6 text-black">Last name</label>
+        <div class="mt-2.5">
+          <input type="text" name="lastname" ngModel autocomplete="family-name" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset shadow-gray-500 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label for="company" class="block text-sm font-semibold leading-6 text-black">Username</label>
+        <div class="mt-2.5">
+          <input type="text" [(ngModel)]="username" name="username" ngModel class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset shadow-gray-500 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-400 sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div [ngClass]="{'hidden': checkBoolean()}" class="sm:col-span-2">
+        <label for="company" class="block text-sm font-semibold leading-6 text-black">Upload Profile Picture(*)</label>
+        <div class="mt-2.5">
+          <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" [disabled]="checkBoolean()" [ngClass]="{'bg-white hover:bg-red-200': checkBoolean()}" type="button" class="mb-2 w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md">Choose Photo</button>
+        </div>
+      </div>
+
+      <div class="sm:col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Choose your preferred mode:</label>
+        <div class="mt-1">
+          <label class="inline-flex items-center">
+            <input type="radio" ngModel name="isDarkMode" value="true" class="form-radio text-gray-500">
+            <span class="ml-2">Dark Mode</span>
+          </label>
+          <label class="inline-flex items-center ml-6">
+            <input type="radio" ngModel name="isDarkMode" value="false" class="form-radio text-gray-500">
+            <span class="ml-2">Light Mode</span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="sm:col-span-2">
+        <label for="message" class="block text-sm font-semibold leading-6 text-gray-600">About</label>
+        <div class="mt-2.5">
+          <textarea name="about" ngModel rows="4" placeholder="Ex: Hi, I am Sasha from Indiana" class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+        </div>
+      </div>
+      
+    </div>
+    <div class="mt-10">
+      <button type="submit" class="block w-full rounded-md bg-gray-700 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Submit</button>
+    </div>
+  </form>
 </div>
-
-
 
 <!-- Modal -->
 
-<div id="popup-modal" [hidden]="!isModalVisible" tabindex="-1" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="fixed inset-0 bg-black opacity-90"></div>
       <div class="relative p-4 w-full max-w-md max-h-full">
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <button (click)="toggleModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+            <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
                 <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                 </svg>
@@ -85,7 +112,7 @@ import { ActivatedRoute, Router } from '@angular/router';
                 </div> 
     <!-- InPut Area -->
                 <ng-container *ngIf="uploadSuccessMessage !== null">
-                  <button (click)="toggleModal()" type="button" class="w-full mt-1 text-center text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2">
+                  <button type="button" class="w-full mt-1 text-center text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 me-2">
                       Continue
                   </button>
                 </ng-container>         
@@ -101,36 +128,45 @@ import { ActivatedRoute, Router } from '@angular/router';
   styles: [
   ]
 })
-export class SetupComponent implements OnInit {
-  username: string = '';
-  about: string = '';
-  isDarkMode: boolean = false; // 'true' if dark mode, 'false' if light mode
-  profilePic: string | null = null;
+export class SetupComponent implements OnInit, AfterViewInit {
+
+  username: string| null = null;
   selectedFile: any;
   uploadButtonEnabled: boolean = false;
   uploadSuccessMessage: string | null = null;
   uploadedImage!: string;
-  isModalVisible: boolean = false;
   userUrlId: string = '';
 
   constructor(private firebaseService: FirebaseService, private route: ActivatedRoute, private router: Router){}
 
   ngOnInit(): void {
+    initFlowbite();
+    initModals();
     this.route.params.subscribe(params => {
       // Get the userId from the route parameters
-      this.userUrlId = params['id'];
-      
+      this.userUrlId = params['id']; 
       // Now you can use this.userId in your component
       console.log('User ID from route: ', this.userUrlId);
     });
   }
 
-  toggleModal() {
-    this.isModalVisible = !this.isModalVisible;
+  ngAfterViewInit(): void {
+    initFlowbite();
+    initModals();
+    initPopovers();
+  }
+
+  checkBoolean(): boolean{
+    (this.username?.trim() == '') ? this.username = null : null;
+    return (this.username == null)? true: false;
+  }
+
+  consoleLog(form: any){
+    console.log('Form: ', form);
   }
 
   async uploadImage(): Promise<string> {
-    if (this.selectedFile) {
+    if (this.selectedFile && this.username !== null) {
       try {
         const imageUrlPromise = this.firebaseService.uploadImage(this.selectedFile, this.username);
         const imageUrl = await imageUrlPromise;
@@ -158,72 +194,79 @@ export class SetupComponent implements OnInit {
     this.uploadImage();
   }
 
-  isFormComplete(): boolean {
+  isFormComplete(form: IUser): boolean {
     // Return true if complete, false otherwise
-    return this.username.trim() !== '' && this.isDarkMode !== null;
+    return form.username.trim() !== '' && form.lastname.trim() !== '' && form.firstname.trim() !== '' && form.isDarkMode !== null;
   }
 
-  onContinueClick() {
-    if (this.isFormComplete()) {
+  async onContinueClick(myUser: IUser) {
+    if (this.isFormComplete(myUser)) {
       // Proceed with the next step or any desired action
       console.log('Continue button clicked!');
-      
-      // Check if all required information is available
-      if (this.username !== '' && this.about !== '' && this.uploadedImage !== null) {
-        var userEmail;
-        var userId: string;
-        const auth = getAuth();
-        const onlineUser = auth.currentUser;
-        onAuthStateChanged(auth, (user) => {
-          if (user !== null && onlineUser !== null) {
-            userEmail = onlineUser.email;
-            userId = this.userUrlId;
-            console.log('user email: ' + userEmail + ' userid: '+ userId + ' username: ' + this.username)
+  
+      try {
+        // Upload the image and get the URL
+        const imageUrl = await this.uploadImage();
+  
+        // Check if all required information is available
+        if (myUser.username !== '' && myUser.about !== '' && imageUrl !== null) {
+          var userEmail;
+          var userId: string;
+          const auth = getAuth();
+          const onlineUser = auth.currentUser;
+          onAuthStateChanged(auth, (user) => {
+            if (user !== null && onlineUser !== null) {
+              userEmail = onlineUser.email;
+              userId = this.userUrlId;
+              console.log('user email: ' + userEmail + ' userid: ' + userId + ' username: ' + myUser.username)
+  
+              if (userEmail !== null && userId !== null) {
+                // Fetch the email:
+                this.firebaseService.getUserEmailById(userId)
+                  .then(email => {
+                    if (email !== null) {
+                      userEmail = email;
+                      myUser.email = email;
+                      myUser.image = imageUrl; // Use the uploaded image URL here
+                      console.log('User :', myUser);
+                      var newUser:IUser = {
+                        username : myUser.username,
+                        firstname : myUser.firstname,
+                        lastname : myUser.lastname,
+                        email : myUser.email,
+                        image : this.uploadedImage,
+                        isDarkMode : myUser.isDarkMode
+                      }
 
-            if(userEmail !== null && userId !== null){
-
-              // fetch the email:
-              this.firebaseService.getUserEmailById(userId)
-                .then(email => {
-                  if (email !== null) {
-                    userEmail = email;
-                    console.log('User email:', email);
-                  } else {
-                    console.log('User not found or error fetching email');
-                  }
-                });
-
-
-              const user: IUser = {
-                username: this.username,
-                email: userEmail,
-                about: this.about.toLowerCase(),
-                isDarkMode: this.isDarkMode,
-                image: this.uploadedImage
-              };
-              // const newUser = JSON.stringify(user);
-              // console.log(`this is the user added: ${JSON.stringify(user)}`);
-
-
-              this.firebaseService.updateUser(userId, user).then((updatedUser) => {
-                setTimeout(() => {
-                  this.router.navigate(['/firebaseapp/start-up/', userId]);
-                }, 1000);
-                  console.log(updatedUser);
-                }).catch((err) => {
-                  console.log(err);
-                })
+                      console.log('User: ', newUser)
+  
+                      // Update the user in the database
+                      this.firebaseService.updateUser(userId, newUser)
+                        .then((updatedUser) => {
+                          setTimeout(() => {
+                            this.router.navigate(['/firebaseapp/start-up/', userId]);
+                          }, 1000);
+                          console.log(updatedUser);
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                        });
+                    } else {
+                      console.log('User not found or error fetching email');
+                    }
+                  });
+              }
+            } else {
+              // User is signed out
             }
-            // ...
-          } else {
-            // User is signed out
-          }
-        });
-        
+          });
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
       }
     } else {
       console.log('Please fill in all required information.');
     }
-  }
+  }  
   
 }

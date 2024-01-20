@@ -62,6 +62,8 @@ export class AuthService {
         this.popupTypeSubject.next('success');
         this.popupMessageSubject.next('Account created successfully! You are being redirected to Home.');
         const user: IUser = {
+          firstname: 'demo firstname',
+          lastname: 'demo lastname',
           username: 'demo username'.toLowerCase(),
           email: form.email.toLowerCase(),
           image: 'demo image',

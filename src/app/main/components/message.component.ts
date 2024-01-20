@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, combineLatest, from, map, pipe } from 'rxjs';
 import { IUser } from '../interfaces/user.model';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-message',
@@ -14,13 +15,13 @@ import { IUser } from '../interfaces/user.model';
   <div class="px-3 py-3 lg:px-5 lg:pl-3">
     <div class="flex items-center justify-end sm:justify-center">
       <div class="flex items-center justify-end rtl:justify-end">
-        <a href="https://flowbite.com" class="flex ms-2 md:me-24 gap-x-6">
+      <button *ngIf="user.image !== ''" type="button" type="button" data-drawer-target="drawer-swipe" data-drawer-show="drawer-swipe" data-drawer-placement="bottom" data-drawer-edge="true" data-drawer-edge-offset="bottom-[60px]" aria-controls="drawer-swipe" class="flex ms-2 md:me-24 gap-x-6">
           <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">{{ user.username }}</span>
           <div class="relative justify-end"> 
             <img class="w-10 h-10 rounded ring-2 ring-transparent hover:ring-blue-200 shadow-md shadow-gray-500" [src]="user.image" alt="">
             <span class="top-0 left-7 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
           </div>
-        </a>
+        </button>
       </div>
     </div>
   </div>
@@ -142,7 +143,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
   constructor(private firebaseService: FirebaseService, private authService: AuthService, private route: ActivatedRoute){}
 
   ngOnInit(): void {
-
+    initFlowbite();
     if(this.authService.userId !== null){
       this.senderId = this.authService.userId;
 
@@ -194,7 +195,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
 
    private scrollToBottom(): void {
     if (this.messageContainer) {
-      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+      this.messageContainer.nativeElement.scrollToBottom;
     }
   }
 
@@ -222,6 +223,7 @@ export class MessageComponent implements OnInit, AfterViewInit {
     this.firebaseService.addMessage(message, this.senderId, this.receiverId).then(() => {
       // Message sent successfully, clear the text area
       textMessage.chat = '';
+      this.scrollToBottom();
   
       // Now retrieve the messages
       this.firebaseService.getMessagesByUserId(this.senderId, this.receiverId).subscribe(

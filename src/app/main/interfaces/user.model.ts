@@ -1,6 +1,8 @@
 export interface IUser {
 [x: string]: any;
   username: string;
+  lastname: string;
+  firstname: string;
   email: string;
   image?: string;
   about?: string;

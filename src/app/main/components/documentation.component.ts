@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-documentation',
@@ -46,6 +47,9 @@ import { Component } from '@angular/core';
   styles: [
   ]
 })
-export class DocumentationComponent {
+export class DocumentationComponent implements OnInit {
 
+  ngOnInit(): void {
+    initFlowbite();
+  }
 }

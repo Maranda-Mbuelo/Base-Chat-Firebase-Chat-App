@@ -1,7 +1,8 @@
 import { FirebaseService } from './../services/firebase.service';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IUser } from '../interfaces/user.model';
 import { AuthService } from '../services/auth.service';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-profile',
@@ -80,18 +81,21 @@ import { AuthService } from '../services/auth.service';
   styles: [
   ]
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
 
   user!: IUser;
 
   constructor(private firebaseService: FirebaseService, private authService: AuthService){
-    // var id = this.authService.userId;
-    var id = 'f9qY9yEHwrLIcNg25Xop';
+    var id = this.authService.userId;
     if(id){
       this.firebaseService.getUserById(id).then((user) => {
         (user)? this.user = user : console.error('User not Found')
       })
     }
+  }
+
+  ngOnInit(): void {
+    initFlowbite();
   }
 
 }

@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '../services/firebase.service';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map } from 'rxjs';
 import { IUser } from '../interfaces/user.model';
 import { Router } from '@angular/router';
+import { initFlowbite } from 'flowbite';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-users',
   template: `
-<div class="bg-white mt-12 p-6 sm:p-8 rounded-md h-screen w-full">
+<div class="bg-white mt-12 p-6 sm:p-8 rounded-md h-screen w-full overflow-y-scroll">
   <div class="flex flex-col sm:flex-row items-center justify-between pb-4">
     <div class="mb-2 sm:mb-0">
       <h2 class="text-gray-600 font-semibold text-lg">App Users</h2>
@@ -38,7 +40,7 @@ import { Router } from '@angular/router';
         <p class="text-gray-600 mb-4">{{selectedUser.about}}</p>
       </div>
       <div class="flex justify-between">
-        <button (click)="viewProfile()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">View Profile</button>
+        <button (click)="viewProfile(selectedUser.id)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">View Profile</button>
         <button (click)="addFriend()" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none">Add Friend</button>
         <button (click)="sendMessage(selectedUser.id)" class="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 focus:outline-none">Send Message</button>
       </div>
@@ -74,6 +76,7 @@ import { Router } from '@angular/router';
 })
 export class UsersComponent implements OnInit {
   // users$!: Observable<IUser[]>;
+  userId!: string | null;
   selectedUser!: {
     about: string,
     email: string,
@@ -92,9 +95,11 @@ export class UsersComponent implements OnInit {
     username: string
   }[]>;
 
-  constructor(private firebaseService: FirebaseService, private router: Router) {}
+  constructor(private authService: AuthService,private firebaseService: FirebaseService, private router: Router) {}
 
   ngOnInit(): void {
+    initFlowbite();
+    this.userId = this.authService.userId;
     this.users$ = this.firebaseService.getUsers().pipe(
       map((users) => users as {
         about: string,
@@ -103,7 +108,9 @@ export class UsersComponent implements OnInit {
         image: string,
         isDarkMode: boolean,
         username: string
-      }[])
+      }[]),
+      // Filter out the user with the specified ID
+      map(users => users.filter(user => user.id !== this.userId))
     );
   }
 
@@ -122,7 +129,8 @@ export class UsersComponent implements OnInit {
     this.selectedUser = undefined;
   }
 
-  viewProfile(): void {
+  viewProfile(userId: string): void {
+    this.router.navigate(['selecteduser', userId])
     // Implement the action to view the user's profile
     console.log('View Profile');
   }

@@ -14,6 +14,8 @@ export class LayoutComponent implements OnInit {
   userId!: string;
   user: IUser = {
     username : '',
+    lastname : '',
+    firstname : '',
     email : '',
     image : '',
     about : '',

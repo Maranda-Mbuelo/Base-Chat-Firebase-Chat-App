@@ -13,6 +13,9 @@ import { DocumentationComponent } from './components/documentation.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './components/profile.component';
 import { UsersComponent } from './components/users.component';
+import { ProUpgradeComponent } from './components/pro-upgrade.component';
+import { PostsComponent } from './components/posts.component';
+import { SingleUserComponent } from './components/single-user.component';
 
 
 @NgModule({
@@ -25,7 +28,10 @@ import { UsersComponent } from './components/users.component';
     SetupComponent,
     DocumentationComponent,
     ProfileComponent,
-    UsersComponent
+    UsersComponent,
+    ProUpgradeComponent,
+    PostsComponent,
+    SingleUserComponent
   ],
   imports: [
     CommonModule,
