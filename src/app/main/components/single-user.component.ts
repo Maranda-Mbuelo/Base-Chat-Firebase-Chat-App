@@ -1,4 +1,3 @@
-import { User } from 'firebase/auth';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FirebaseService } from '../services/firebase.service';
@@ -8,6 +7,7 @@ import { IMediaPost, IPost } from '../interfaces/others.model';
 import { Timestamp } from '@angular/fire/firestore';
 import { PostService } from '../services/post.service';
 import { initFlowbite } from 'flowbite';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-single-user',
@@ -28,13 +28,13 @@ import { initFlowbite } from 'flowbite';
     <!-- <div class="hidden sm:block flex-shrink flex-grow-0 justify-start px-2"> -->
     <div class="flex rounded-full bg-gray-300 px-2 w-full max-w-[600px]">
         <button class="self-center flex p-1 cursor-pointer">
-            <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="text-gray-300" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
                 <g id="SVGRepo_iconCarrier">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.567 9.8895C12.2495 8.90124 12.114 7.5637 11.247 6.7325C10.3679 5.88806 9.02339 5.75928 7.99998 6.4215C7.57983 6.69308 7.25013 7.0837 7.05298 7.5435C6.85867 7.99881 6.80774 8.50252 6.90698 8.9875C7.00665 9.47472 7.25054 9.92071 7.60698 10.2675C7.97021 10.6186 8.42786 10.8563 8.92398 10.9515C9.42353 11.049 9.94062 11.0001 10.413 10.8105C10.8798 10.6237 11.2812 10.3033 11.567 9.8895Z" stroke="#ff5c5c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.433 17.8895C11.7504 16.9012 11.886 15.5637 12.753 14.7325C13.6321 13.8881 14.9766 13.7593 16 14.4215C16.4202 14.6931 16.7498 15.0837 16.947 15.5435C17.1413 15.9988 17.1922 16.5025 17.093 16.9875C16.9933 17.4747 16.7494 17.9207 16.393 18.2675C16.0298 18.6186 15.5721 18.8563 15.076 18.9515C14.5773 19.0481 14.0614 18.9988 13.59 18.8095C13.1222 18.6234 12.7197 18.3034 12.433 17.8895V17.8895Z" stroke="#ff5c5c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M12 7.75049C11.5858 7.75049 11.25 8.08627 11.25 8.50049C11.25 8.9147 11.5858 9.25049 12 9.25049V7.75049ZM19 9.25049C19.4142 9.25049 19.75 8.9147 19.75 8.50049C19.75 8.08627 19.4142 7.75049 19 7.75049V9.25049ZM6.857 9.25049C7.27121 9.25049 7.607 8.9147 7.607 8.50049C7.607 8.08627 7.27121 7.75049 6.857 7.75049V9.25049ZM5 7.75049C4.58579 7.75049 4.25 8.08627 4.25 8.50049C4.25 8.9147 4.58579 9.25049 5 9.25049V7.75049ZM12 17.2505C12.4142 17.2505 12.75 16.9147 12.75 16.5005C12.75 16.0863 12.4142 15.7505 12 15.7505V17.2505ZM5 15.7505C4.58579 15.7505 4.25 16.0863 4.25 16.5005C4.25 16.9147 4.58579 17.2505 5 17.2505V15.7505ZM17.143 15.7505C16.7288 15.7505 16.393 16.0863 16.393 16.5005C16.393 16.9147 16.7288 17.2505 17.143 17.2505V15.7505ZM19 17.2505C19.4142 17.2505 19.75 16.9147 19.75 16.5005C19.75 16.0863 19.4142 15.7505 19 15.7505V17.2505ZM12 9.25049H19V7.75049H12V9.25049ZM6.857 7.75049H5V9.25049H6.857V7.75049ZM12 15.7505H5V17.2505H12V15.7505ZM17.143 17.2505H19V15.7505H17.143V17.2505Z" fill="#ff5c5c"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.567 9.8895C12.2495 8.90124 12.114 7.5637 11.247 6.7325C10.3679 5.88806 9.02339 5.75928 7.99998 6.4215C7.57983 6.69308 7.25013 7.0837 7.05298 7.5435C6.85867 7.99881 6.80774 8.50252 6.90698 8.9875C7.00665 9.47472 7.25054 9.92071 7.60698 10.2675C7.97021 10.6186 8.42786 10.8563 8.92398 10.9515C9.42353 11.049 9.94062 11.0001 10.413 10.8105C10.8798 10.6237 11.2812 10.3033 11.567 9.8895Z" stroke="gray" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.433 17.8895C11.7504 16.9012 11.886 15.5637 12.753 14.7325C13.6321 13.8881 14.9766 13.7593 16 14.4215C16.4202 14.6931 16.7498 15.0837 16.947 15.5435C17.1413 15.9988 17.1922 16.5025 17.093 16.9875C16.9933 17.4747 16.7494 17.9207 16.393 18.2675C16.0298 18.6186 15.5721 18.8563 15.076 18.9515C14.5773 19.0481 14.0614 18.9988 13.59 18.8095C13.1222 18.6234 12.7197 18.3034 12.433 17.8895V17.8895Z" stroke="gray" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 7.75049C11.5858 7.75049 11.25 8.08627 11.25 8.50049C11.25 8.9147 11.5858 9.25049 12 9.25049V7.75049ZM19 9.25049C19.4142 9.25049 19.75 8.9147 19.75 8.50049C19.75 8.08627 19.4142 7.75049 19 7.75049V9.25049ZM6.857 9.25049C7.27121 9.25049 7.607 8.9147 7.607 8.50049C7.607 8.08627 7.27121 7.75049 6.857 7.75049V9.25049ZM5 7.75049C4.58579 7.75049 4.25 8.08627 4.25 8.50049C4.25 8.9147 4.58579 9.25049 5 9.25049V7.75049ZM12 17.2505C12.4142 17.2505 12.75 16.9147 12.75 16.5005C12.75 16.0863 12.4142 15.7505 12 15.7505V17.2505ZM5 15.7505C4.58579 15.7505 4.25 16.0863 4.25 16.5005C4.25 16.9147 4.58579 17.2505 5 17.2505V15.7505ZM17.143 15.7505C16.7288 15.7505 16.393 16.0863 16.393 16.5005C16.393 16.9147 16.7288 17.2505 17.143 17.2505V15.7505ZM19 17.2505C19.4142 17.2505 19.75 16.9147 19.75 16.5005C19.75 16.0863 19.4142 15.7505 19 15.7505V17.2505ZM12 9.25049H19V7.75049H12V9.25049ZM6.857 7.75049H5V9.25049H6.857V7.75049ZM12 15.7505H5V17.2505H12V15.7505ZM17.143 17.2505H19V15.7505H17.143V17.2505Z" fill="gray"/>
                 </g>
             </svg>
         </button>
@@ -58,18 +58,6 @@ import { initFlowbite } from 'flowbite';
     <!-- login -->
     <div class="flex-initial">
       <div class="flex justify-end items-center relative">
-       
-        <!-- <div class="flex mr-4 items-center">
-          <div class="block relative">
-            <button data-drawer-edge="true" data-drawer-edge-offset="bottom-[60px]" aria-controls="drawer-swipe" type="button" class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full relative ">
-              <div class="flex items-center h-5">
-                <div class="_xpkakx">
-                  <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style="display: block; height: 16px; width: 16px; fill: currentcolor;"><path d="m8.002.25a7.77 7.77 0 0 1 7.748 7.776 7.75 7.75 0 0 1 -7.521 7.72l-.246.004a7.75 7.75 0 0 1 -7.73-7.513l-.003-.245a7.75 7.75 0 0 1 7.752-7.742zm1.949 8.5h-3.903c.155 2.897 1.176 5.343 1.886 5.493l.068.007c.68-.002 1.72-2.365 1.932-5.23zm4.255 0h-2.752c-.091 1.96-.53 3.783-1.188 5.076a6.257 6.257 0 0 0 3.905-4.829zm-9.661 0h-2.75a6.257 6.257 0 0 0 3.934 5.075c-.615-1.208-1.036-2.875-1.162-4.686l-.022-.39zm1.188-6.576-.115.046a6.257 6.257 0 0 0 -3.823 5.03h2.75c.085-1.83.471-3.54 1.059-4.81zm2.262-.424c-.702.002-1.784 2.512-1.947 5.5h3.904c-.156-2.903-1.178-5.343-1.892-5.494l-.065-.007zm2.28.432.023.05c.643 1.288 1.069 3.084 1.157 5.018h2.748a6.275 6.275 0 0 0 -3.929-5.068z"></path></svg>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div> -->
 
         <div class="block">
             <div class="inline relative">
@@ -409,7 +397,7 @@ import { initFlowbite } from 'flowbite';
 
     <article class="h-[80vh] overflow-y-scroll">
 
-    <form #myForm="ngForm" (submit)="onAddPost(myForm.value)" class="bg-white shadow rounded-lg mb-6 p-4">
+    <form *ngIf="userId == mainUserId" #myForm="ngForm" (submit)="onAddPost(myForm.value)" class="bg-white shadow rounded-lg mb-6 p-4">
         <input ngModel type="text" name="title" placeholder="Enter post title" class="w-full rounded-lg p-2 text-sm bg-gray-100 border border-transparent appearance-none rounded-tg placeholder-gray-400 mb-2">
         <textarea ngModel name="content" placeholder="Type something..." class="w-full rounded-lg p-2 text-sm bg-gray-100 border border-transparent appearance-none rounded-tg placeholder-gray-400"></textarea>
         <footer class="flex justify-between mt-2">
@@ -453,15 +441,15 @@ import { initFlowbite } from 'flowbite';
 
             <form #myForm="ngForm" (submit)="onSubmitClick(myForm.value)" class="max-w-md mx-auto">
                 <div class="relative z-0 w-full mb-5 group">
-                    <input ngModel type="text" name="title" id="floating_title" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input [(ngModel)]="form.title" type="text" name="title" id="floating_title" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                     <label for="floating_title" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Post Title</label>
                 </div>
                 <div class="relative z-0 w-full mb-5 group">
-                    <input ngModel type="text" name="content" id="floating_content" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+                    <input [(ngModel)]="form.content" type="text" name="content" id="floating_content" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
                     <label for="floating_content" class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">What's on your mind</label>
                 </div>  
   
-                <div class="flex items-center justify-center w-full">
+                <div *ngIf="!isLoading" class="flex items-center justify-center w-full">
                     <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
                         <div class="flex flex-col items-center justify-center pt-5 pb-6">
                             <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
@@ -472,7 +460,37 @@ import { initFlowbite } from 'flowbite';
                         </div>
                         <input (change)="onFileSelected($event)" ngModel name="image" id="dropzone-file" type="file" class="hidden"/>
                     </label>
+                    
                 </div> 
+
+
+                <!-- Loading message -->
+  <ng-container *ngIf="isLoading && !imageDoneLoading">
+    <div class="flex items-center justify-center w-full">
+      <div class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">{{loadingMessage}}</span></p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Thank You For Your patience!</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+
+  <!-- Image uploaded message -->
+  <ng-container *ngIf="isLoading && imageDoneLoading">
+    <div class="flex items-center justify-center w-full">
+      <div class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" height="30px" width="30px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000" stroke="#000000" stroke-width="1.024">
+            <!-- ... Your SVG path ... -->
+          </svg>
+          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Image got uploaded, continue with your post</span></p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Thank You For Your patience!</p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
 
                 <!-- Modal footer -->
                 <div class="flex items-center mt-6 space-x-2 rtl:space-x-reverse">
@@ -481,6 +499,7 @@ import { initFlowbite } from 'flowbite';
                 </div>
             </form>
 
+            
                 
             </div>
         </div>
@@ -491,7 +510,9 @@ import { initFlowbite } from 'flowbite';
 
 <ng-container *ngFor="let post of mergedPost$ | async">
         <div *ngIf="isMediaPost(post) && post.title !== undefined; else withoutImageTemplate" class="bg-white shadow rounded-lg my-4">
-                <div *ngIf="data$ | async as data" class="flex flex-row px-2 py-3 mx-3">
+                
+            <ng-container *ngIf="data$ | async as data">
+            <div class="flex flex-row px-2 py-3 mx-3">
                     <div class="w-auto h-auto rounded-full border-2 border-green-500">
                         <img class="w-12 h-12 object-cover rounded-full shadow cursor-pointer" alt="User avatar" [src]="data.user?.image">
                     </div>
@@ -544,11 +565,11 @@ import { initFlowbite } from 'flowbite';
                         <div class="flex text-gray-700 font-normal rounded-md mb-2 mr-4 items-center">Views: <div class="ml-1 text-gray-400 text-ms"> 60k</div></div>
                     </div>
                     <div class="mt-3 mx-5 w-full flex justify-end text-xs">
-                        <div class="flex text-gray-700  rounded-md mb-2 mr-4 items-center">Likes: <div class="ml-1 text-gray-400 text-ms"> 120k</div></div>
+                        <div class="flex text-gray-700  rounded-md mb-2 mr-4 items-center">Likes: <div class="ml-1 text-gray-400 text-ms"> {{post?.likes}}</div></div>
                     </div>
                 </div>
                 <div class="relative flex items-center self-center w-full max-w-xl p-4 overflow-hidden text-gray-600 focus-within:text-gray-400">
-                    <img class="w-10 h-10 object-cover rounded-full shadow mr-2 cursor-pointer" alt="User avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80">
+                    <img class="w-10 h-10 object-cover rounded-full shadow mr-2 cursor-pointer" alt="User avatar" [src]="data.user?.image">
                     <span class="absolute inset-y-0 right-0 flex items-center pr-6">
                         <button type="submit" class="p-1 focus:outline-none focus:shadow-none hover:text-blue-500">
                         <svg class="w-6 h-6 transition ease-out duration-300 hover:text-blue-500 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -559,6 +580,8 @@ import { initFlowbite } from 'flowbite';
                     </span>
                      <input type="search" class="w-full py-2 pl-4 pr-10 text-sm bg-gray-100 border border-transparent appearance-none rounded-tg placeholder-gray-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:text-gray-900 focus:shadow-outline-blue" style="border-radius: 25px" placeholder="Post a comment..." autocomplete="off">
                 </div>
+            </ng-container>
+                
             </div>
 
   <ng-template #withoutImageTemplate>
@@ -605,6 +628,63 @@ import { initFlowbite } from 'flowbite';
   
 
     </article>
+
+    
+
+<div data-dial-init class="fixed end-6 bottom-6 group">
+    <div id="speed-dial-menu-default" class="flex flex-col items-center hidden mb-4 space-y-2">
+        <button type="button" data-tooltip-target="tooltip-share" data-tooltip-placement="left" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                <path d="M14.419 10.581a3.564 3.564 0 0 0-2.574 1.1l-4.756-2.49a3.54 3.54 0 0 0 .072-.71 3.55 3.55 0 0 0-.043-.428L11.67 6.1a3.56 3.56 0 1 0-.831-2.265c.006.143.02.286.043.428L6.33 6.218a3.573 3.573 0 1 0-.175 4.743l4.756 2.491a3.58 3.58 0 1 0 3.508-2.871Z"/>
+            </svg>
+            <span class="sr-only">Share</span>
+        </button>
+        <div id="tooltip-share" role="tooltip" class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Share
+            <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+        <button type="button" data-tooltip-target="tooltip-print" data-tooltip-placement="left" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5 20h10a1 1 0 0 0 1-1v-5H4v5a1 1 0 0 0 1 1Z"/>
+                <path d="M18 7H2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v-3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-1-2V2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3h14Z"/>
+            </svg>
+            <span class="sr-only">Print</span>
+        </button>
+        <div id="tooltip-print" role="tooltip" class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Print
+            <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+        <button type="button" data-tooltip-target="tooltip-download" data-tooltip-placement="left" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Download</span>
+        </button>
+        <div id="tooltip-download" role="tooltip" class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Download
+            <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+        <button type="button" data-tooltip-target="tooltip-copy" data-tooltip-placement="left" class="flex justify-center items-center w-[52px] h-[52px] text-gray-500 hover:text-gray-900 bg-white rounded-full border border-gray-200 dark:border-gray-600 dark:hover:text-white shadow-sm dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                <path d="M5 9V4.13a2.96 2.96 0 0 0-1.293.749L.879 7.707A2.96 2.96 0 0 0 .13 9H5Zm11.066-9H9.829a2.98 2.98 0 0 0-2.122.879L7 1.584A.987.987 0 0 0 6.766 2h4.3A3.972 3.972 0 0 1 15 6v10h1.066A1.97 1.97 0 0 0 18 14V2a1.97 1.97 0 0 0-1.934-2Z"/>
+                <path d="M11.066 4H7v5a2 2 0 0 1-2 2H0v7a1.969 1.969 0 0 0 1.933 2h9.133A1.97 1.97 0 0 0 13 18V6a1.97 1.97 0 0 0-1.934-2Z"/>
+            </svg>
+            <span class="sr-only">Copy</span>
+        </button>
+        <div id="tooltip-copy" role="tooltip" class="absolute z-10 invisible inline-block w-auto px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+            Copy
+            <div class="tooltip-arrow" data-popper-arrow></div>
+        </div>
+    </div>
+    <button type="button" data-dial-toggle="speed-dial-menu-default" aria-controls="speed-dial-menu-default" aria-expanded="false" class="flex items-center justify-center text-white bg-blue-700 rounded-full w-14 h-14 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800">
+        <svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="sr-only">Open actions menu</span>
+    </button>
+</div>
+
     
 </main>
 
@@ -623,7 +703,8 @@ import { initFlowbite } from 'flowbite';
 })
 export class SingleUserComponent implements OnInit {
 
-  userId!: 'f9qY9yEHwrLIcNg25Xop';
+  userId!: string;
+  mainUserId!: string;
   selectedFile: any;
   uploadedImage!: string;
   user$ = new BehaviorSubject<IUser | null>(null);
@@ -632,11 +713,20 @@ export class SingleUserComponent implements OnInit {
   mergedPost$ = new BehaviorSubject<(IMediaPost | IPost)[]>([]);
   data$ = combineLatest([this.user$, this.textPosts$]).pipe(
   map(([user, textPosts]) => ({ user, textPosts }))
-);
-  constructor(private route: ActivatedRoute, private firebaseService: FirebaseService, private postService: PostService) {}
+  );
+  isLoading: boolean = false;
+  imageDoneLoading: boolean = false;
+  loadingMessage: string = 'Your Image is Loading, Please wait';
+  form = {
+    title: '',
+    content: ''
+  };
+
+  constructor(private route: ActivatedRoute, private authService: AuthService, private firebaseService: FirebaseService, private postService: PostService) {}
 
   ngOnInit(): void {
     initFlowbite();
+    (this.authService.userId) ? this.mainUserId = this.authService.userId : null;
     this.route.params.subscribe(params => {
       // Get the userId from the route parameters
       const id = params['id']; 
@@ -688,13 +778,11 @@ export class SingleUserComponent implements OnInit {
       likes: 0,
     };
 
-    if(form.content.trim() !== '' && form.title.trim() !== '') {
-        try {
-            const postId = await this.postService.addPost(post, this.userId);
-            console.log(`Post added with ID: ${postId}`);
-        } catch (error) {
-            console.error('Error adding post:', error);
-        }
+    try {
+        const postId = await this.postService.addPost(post, this.userId);
+        console.log(`Post added with ID: ${postId}`);
+    } catch (error) {
+        console.error('Error adding post:', error);
     }
   }
 
@@ -716,6 +804,7 @@ export class SingleUserComponent implements OnInit {
 
     try {
       const postId = await this.postService.addMediaPost(post, userId);
+      console.log(`Post added: `, post);
       console.log(`Post added with ID: ${postId}`);
     } catch (error) {
       console.error('Error adding post:', error);
@@ -729,8 +818,13 @@ export class SingleUserComponent implements OnInit {
       try {
         const imageUrlPromise = this.postService.uploadImage(this.selectedFile, this.userId);
         const imageUrl = await imageUrlPromise;
+        this.loadingMessage = 'Image uploaded successfully!';
         console.log('Image uploaded successfully. URL:', imageUrl);
         this.uploadedImage = imageUrl;
+        setTimeout(() => {
+            this.imageDoneLoading = true;
+            this.isLoading = false;
+        })
         return imageUrl;
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -747,19 +841,21 @@ export class SingleUserComponent implements OnInit {
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
     console.log('selected file', this.selectedFile);
-    // Reset success message when a new file is selected
+    this.isLoading = true; 
     this.uploadImage();
   }
 
   onSubmitClick(form: any): void {
     const newPost: IMediaPost = {
       id: '',
-      title: form.title,
-      content: form.content,
+      title: this.form.title,
+      content: this.form.content,
       timestamp: Timestamp.now(),
       images: [this.uploadedImage],
       likes: 0
     };
+
+    console.log('post: ' ,newPost);
   
     this.onAddMediaPost(this.userId, newPost);
   }
