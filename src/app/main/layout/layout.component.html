@@ -17,15 +17,29 @@
         <div class="flex items-center">
             <div class="flex items-center ms-3">
               <div>
-                <button *ngIf="user.image !== ''" type="button" type="button" data-drawer-target="drawer-swipe" data-drawer-show="drawer-swipe" data-drawer-placement="bottom" data-drawer-edge="true" data-drawer-edge-offset="bottom-[60px]" aria-controls="drawer-swipe" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                <button (click)="routeToProfile()" *ngIf="user.image !== ''" type="button" type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
                   <span class="sr-only">Open user menu</span>
                   <img class="w-8 h-8 rounded-full" [src]="user.image" alt="user photo">
                 </button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </nav>
+  
+  <aside *ngIf="user" id="logo-sidebar" class="fixed top-[2%] left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+    <app-aside></app-aside>
+ </aside>
+  
+ <div class="sm:ml-64">
+    <router-outlet></router-outlet>
+ </div>
+  
 
-
-                <!-- Drawer -->
+ <!-- Drawer -->
                 <!-- drawer component -->
-<div id="drawer-swipe" class="fixed z-40 w-full overflow-y-auto bg-white border-t border-gray-200 rounded-t-lg dark:border-gray-700 dark:bg-gray-800 transition-transform left-0 right-0 translate-y-full bottom-[0px]" tabindex="-1" aria-labelledby="drawer-swipe-label">
+<!-- <div id="drawer-swipe" class="fixed z-40 w-full overflow-y-auto bg-white border-t border-gray-200 rounded-t-lg dark:border-gray-700 dark:bg-gray-800 transition-transform left-0 right-0 translate-y-full bottom-[0px]" tabindex="-1" aria-labelledby="drawer-swipe-label">
    <div class="p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700" data-drawer-toggle="drawer-swipe">
       <span class="absolute w-8 h-1 -translate-x-1/2 bg-gray-300 rounded-lg top-3 left-1/2 dark:bg-gray-600"></span>
       <h5 id="drawer-swipe-label" class="inline-flex items-center text-base text-gray-500 dark:text-gray-400 font-medium"><svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -99,23 +113,5 @@
          <div class="font-medium text-center text-gray-500 dark:text-gray-400">Settings</div>
       </div>
    </div>
-</div>
+</div> -->
                 <!-- Drawer -->
-
-
-
-              </div>
-            </div>
-          </div>
-      </div>
-    </div>
-  </nav>
-  
-  <aside *ngIf="user" id="logo-sidebar" class="fixed top-[2%] left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-    <app-aside></app-aside>
- </aside>
-  
- <div class="sm:ml-64">
-    <router-outlet></router-outlet>
- </div>
-  

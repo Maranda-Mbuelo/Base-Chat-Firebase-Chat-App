@@ -1,9 +1,10 @@
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable, catchError, from, map, switchMap, throwError } from 'rxjs';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot, setDoc, increment } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 import { IMediaPost, IPost } from '../interfaces/others.model';
+import { deleteObject } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class PostService {
 
   
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private ngZone: NgZone) {}
 
   async addPost(post: IPost, userId: string): Promise<string> {
     const collectionDatabase = collection(this.firestore, `users/${userId}/post`);
@@ -27,6 +28,12 @@ export class PostService {
     const docDatabase = doc(this.firestore, `users/${userId}/post`, docRef.id);
     updateDoc(docDatabase, newPost);
     // Return the ID of the newly added document
+
+    // Update the 'postsCount' count in moreuserinfo for the user being followed
+    const postsCount = doc(this.firestore, `users/${userId}`);
+    await updateDoc(postsCount, { postsCount: increment(1) });
+
+
     return docRef.id;
   }
 
@@ -47,14 +54,28 @@ export class PostService {
     // Update the document with the newly created post
     await updateDoc(doc(collectionDatabase, docRef.id), newPost);
 
+    // Update the 'postsCount' count in moreuserinfo for the user being followed
+    // Inside your function where you update the value
+    this.ngZone.run(async () => {
+      // Update the 'postsCount' count in moreuserinfo for the user being followed
+      const postsCount = doc(this.firestore, `users/${userId}`);
+      await updateDoc(postsCount, { postsCount: increment(1) });
+    });
+
     // Return the ID of the newly added document
     return docRef.id;
-}
+  }
 
   
 
-  updatePostId(userId: string, id: string, data: Partial<IPost>) {
+  updatePostById(userId: string, id: string, data: Partial<IPost>) {
     const docDatabase = doc(this.firestore, `users/${userId}/post`, id);
+    return updateDoc(docDatabase, data);
+  }
+
+
+  updateMediaPostById(userId: string, id: string, data: Partial<IMediaPost>) {
+    const docDatabase = doc(this.firestore, `users/${userId}/mediapost`, id);
     return updateDoc(docDatabase, data);
   }
 
@@ -75,26 +96,6 @@ export class PostService {
       })
     );
   }
-
-  // uploadImage(file: any, userID: string): Observable<string> {
-  //   if (!file || !userID) {
-  //     return throwError('Invalid file or userID');
-  //   }
-  
-  //   const storage = getStorage();
-  //   // Append a timestamp or a unique identifier to the image name
-  //   const imageName = `post-image_${new Date().getTime()}_${Math.random()}`;
-  
-  //   const storageRef = ref(storage, `post-images/${userID}/${imageName}`);
-  
-  //   return from(uploadBytes(storageRef, file)).pipe(
-  //     switchMap(snapshot => from(getDownloadURL(snapshot.ref))),
-  //     catchError(error => {
-  //       console.error('Error uploading image:', error);
-  //       return throwError('Image upload failed');
-  //     })
-  //   );
-  // }
   
 
   async uploadImage(file: any, userID: string): Promise<string> {
@@ -112,7 +113,7 @@ export class PostService {
   }
   
 
-  async getPostById(userId: string, postId: string): Promise<IPost | null> {
+  async getPostById(userId: string, postId: string): Promise<IPost | IMediaPost | null> {
     const postDocRef = doc(collection(this.firestore, `users/${userId}/post`), postId);
 
     try {
@@ -122,7 +123,19 @@ export class PostService {
         const postData = postSnapshot.data() as IPost;
         return postData;
       } else {
-        console.error('Post not found');
+        const postDocRef = doc(collection(this.firestore, `users/${userId}/mediapost`), postId);
+        try {
+          const postSnapshot = await getDoc(postDocRef);
+    
+          if (postSnapshot.exists()) {
+            const postData = postSnapshot.data() as IMediaPost;
+            return postData;
+          } else{
+            console.error('Post not found');
+          }
+        } catch(error) {
+          console.error('Error fetching post data:', error);
+        }
         return null;
       }
     } catch (error) {
@@ -131,9 +144,77 @@ export class PostService {
     }
   }
 
-  deletePost(id: string, userId: string) {
-    const docDatabase = doc(this.firestore, `users/${userId}/post`, id);
-    return deleteDoc(docDatabase);
+  // deletePost(id: string, userId: string, type: string) {
+  //   // Check if userId is undefined or null
+  //   if (!userId) {
+  //     console.error('Invalid userId:', userId);
+  //   }
+  
+  //   const docPath = (type === 'post')
+  //     ? `users/${userId}/post/${id}`
+  //     : (type === 'mediapost')
+  //       ? `users/${userId}/mediapost/${id}`
+  //       : null;
+  
+  //   // Check if docPath is null
+  //   if (!docPath) {
+  //     console.error('Invalid document path:', docPath);
+  //   }
+  
+  //   const docDatabase = doc(this.firestore, docPath);
+  
+  //   deleteDoc(docDatabase);
+  // }
+
+  deleteMediaPost(id: string, userId: string): Promise<void> {
+    const docDatabase = doc(this.firestore, `/users/${userId}/mediapost`, id);
+  
+    return deleteDoc(docDatabase).then(() => {
+      this.ngZone.run(async () => {
+        // Update the 'postsCount' count in moreuserinfo for the user being followed
+        const postsCount = doc(this.firestore, `users/${userId}`);
+        await updateDoc(postsCount, { postsCount: increment(-1) });
+      });
+      console.log('Media post deleted successfully');
+    }).catch((err) => {
+      console.log('Error deleting media post:', err);
+      throw err; // Rethrow the error to propagate it
+    });
   }
+  
+
+
+  deletePost(id: string, userId: string): Promise<void> {
+    const docDatabase = doc(this.firestore, `users/${userId}/post`, id);
+    
+    return deleteDoc(docDatabase).then(() => {
+      this.ngZone.run(async () => {
+        const postsCount = doc(this.firestore, `users/${userId}`);
+        await updateDoc(postsCount, { postsCount: increment(-1) });
+      });
+      console.log('data deleted');
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+ 
+  
+
+  async deleteImageByUrl(imageUrl: string): Promise<void> {
+    const storage = getStorage();
+    
+    const storageRef = ref(storage, imageUrl);
+  
+    try {
+      await deleteObject(storageRef);
+      console.log('File Deleted');
+    } catch (error: any) {
+      // Handle errors
+      console.error('Error deleting image:', error.message);
+      throw error;
+    }
+  }
+
+
   
 }

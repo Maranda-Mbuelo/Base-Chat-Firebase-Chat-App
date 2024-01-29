@@ -9,6 +9,15 @@ export interface IUser {
   isDarkMode: boolean;
 }
 
+export interface IFetchUser extends IUser{
+  id: string;
+  followers: Array<string>;
+  following: Array<string>;
+  followersCount: number;
+  followingCount: number;
+  postsCount: number;
+}
+
 
 export interface LoginForm {
   email: string;

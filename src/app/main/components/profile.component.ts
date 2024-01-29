@@ -1,8 +1,9 @@
 import { FirebaseService } from './../services/firebase.service';
 import { Component, OnInit } from '@angular/core';
-import { IUser } from '../interfaces/user.model';
+import { IFetchUser, IUser } from '../interfaces/user.model';
 import { AuthService } from '../services/auth.service';
 import { initFlowbite } from 'flowbite';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -30,16 +31,23 @@ import { initFlowbite } from 'flowbite';
                 <img alt="..." [src]="user.image" class="shadow-xl rounded-full h-36 w-36 bg-cover align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px">
               </div>
             </div>
+            <div class="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
+              <div class="py-6 px-3 mt-32 sm:mt-0">
+                <button class="bg-gray-500 active:bg-gray-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150" type="button">
+                  Edit Profile
+                </button>
+              </div>
+            </div>
             <div class="w-full lg:w-4/12 px-4 lg:order-1">
               <div class="flex justify-center py-4 lg:pt-4 pt-8">
                 <div class="mr-4 p-3 text-center">
-                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">22</span><span class="text-sm text-blueGray-400">Friends</span>
+                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{{user.followersCount}}</span><span class="text-sm text-blueGray-400">Followers</span>
                 </div>
                 <div class="mr-4 p-3 text-center">
-                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">10</span><span class="text-sm text-blueGray-400">Photos</span>
+                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{{user.followingCount}}</span><span class="text-sm text-blueGray-400">Following</span>
                 </div>
                 <div class="lg:mr-4 p-3 text-center">
-                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">89</span><span class="text-sm text-blueGray-400">Comments</span>
+                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{{user.postsCount}}</span><span class="text-sm text-blueGray-400">Posts</span>
                 </div>
               </div>
             </div>
@@ -62,7 +70,7 @@ import { initFlowbite } from 'flowbite';
               <div class="w-full lg:w-9/12 px-4">
                 <p class="mb-4 text-lg leading-relaxed text-blueGray-700" [innerHTML]="user.about">
                 </p>
-                <a [routerLink]="'selecteduser/'" class="font-normal text-pink-500">Show more</a>
+                <a (click)="viewUser()" class="font-normal text-pink-500">Show more</a>
               </div>
             </div>
           </div>
@@ -76,10 +84,10 @@ import { initFlowbite } from 'flowbite';
 })
 export class ProfileComponent implements OnInit {
 
-  user!: IUser;
+  user!: IFetchUser;
   userId!: string;
 
-  constructor(private firebaseService: FirebaseService, private authService: AuthService){
+  constructor(private firebaseService: FirebaseService, private authService: AuthService, private router: Router){
     var id = this.authService.userId;
     if(id){
       this.firebaseService.getUserById(id).then((user) => {
@@ -91,6 +99,10 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
     initFlowbite();
     (this.authService.userId) ? this.userId = this.authService.userId : null;
+  }
+
+  viewUser(): void{
+    this.router.navigate(['/selecteduser/', this.userId]);
   }
 
 }

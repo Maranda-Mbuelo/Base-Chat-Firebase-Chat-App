@@ -1,6 +1,6 @@
 import { Observable, from, map } from 'rxjs';
 import { IGetMessages, IMessage } from './../interfaces/message.model';
-import { IUser } from './../interfaces/user.model';
+import { IFetchUser, IUser } from './../interfaces/user.model';
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
@@ -41,14 +41,15 @@ export class FirebaseService {
   //   });
   // }
 
-  async getUserById(userId: string): Promise<IUser | null> {
+  async getUserById(userId: string): Promise<IFetchUser | null> {
     const userDocRef = doc(collection(this.firestore, 'users'), userId);
 
     try {
       const userSnapshot = await getDoc(userDocRef);
 
       if (userSnapshot.exists()) {
-        const userData = userSnapshot.data() as IUser;
+        const userData = userSnapshot.data() as IFetchUser;
+        userData.id = userDocRef.id;
         return userData;
       } else {
         console.error('User not found');

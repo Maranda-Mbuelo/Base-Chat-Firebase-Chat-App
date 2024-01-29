@@ -20,3 +20,4 @@ export interface IPost{
 export interface IMediaPost extends IPost{
     images: Array<string>;
 }
+

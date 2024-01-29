@@ -16,6 +16,10 @@ import { UsersComponent } from './components/users.component';
 import { ProUpgradeComponent } from './components/pro-upgrade.component';
 import { PostsComponent } from './components/posts.component';
 import { SingleUserComponent } from './components/single-user.component';
+import { EditPostComponent } from './components/edit-post.component';
+import { ViewPostComponent } from './components/view-post.component';
+import { CatchUpComponent } from './components/catch-up.component';
+import { BlockComponent } from './components/block.component';
 
 
 @NgModule({
@@ -31,14 +35,18 @@ import { SingleUserComponent } from './components/single-user.component';
     UsersComponent,
     ProUpgradeComponent,
     PostsComponent,
-    SingleUserComponent
+    SingleUserComponent,
+    EditPostComponent,
+    ViewPostComponent,
+    CatchUpComponent,
+    BlockComponent
   ],
   imports: [
     CommonModule,
     MainRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
     
   ]
 })

@@ -58,13 +58,13 @@ import { AuthService } from '../services/auth.service';
         </div>
         <p class="text-gray-900 text-sm font-semibold">{{user.username}}</p>
         <div class="flex items-center mt-1">
-          <span
+          <!-- <span
             class="mr-1 inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
             Active
-          </span>
-          <span class="text-xs text-gray-500">Last seen 5 min ago</span>
+          </span> -->
+          <span class="text-xs text-gray-500">Following: {{user.followingCount}}</span>
         </div>
-        <span class="text-xs text-gray-500 mt-1">Unread messages: 2</span>
+        <span class="text-xs text-gray-500 mt-1">Followers: {{user.followersCount}}</span>
       </li>
     </ng-container>
   </ul>
@@ -92,7 +92,9 @@ export class UsersComponent implements OnInit {
     id: string,
     image: string,
     isDarkMode: boolean,
-    username: string
+    username: string,
+    followersCount: number,
+    followingCount: number,
   }[]>;
 
   constructor(private authService: AuthService,private firebaseService: FirebaseService, private router: Router) {}
@@ -107,7 +109,9 @@ export class UsersComponent implements OnInit {
         id: string,
         image: string,
         isDarkMode: boolean,
-        username: string
+        username: string,
+        followersCount: number,
+        followingCount: number,
       }[]),
       // Filter out the user with the specified ID
       map(users => users.filter(user => user.id !== this.userId))
@@ -120,7 +124,9 @@ export class UsersComponent implements OnInit {
     id: string,
     image: string,
     isDarkMode: boolean,
-    username: string
+    username: string,
+    followersCount: number,
+    followingCount: number,
   }): void {
     this.selectedUser = user;
   }

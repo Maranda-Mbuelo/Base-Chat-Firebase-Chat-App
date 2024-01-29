@@ -12,6 +12,9 @@ import { UsersComponent } from './components/users.component';
 import { ProUpgradeComponent } from './components/pro-upgrade.component';
 import { PostsComponent } from './components/posts.component';
 import { SingleUserComponent } from './components/single-user.component';
+import { EditPostComponent } from './components/edit-post.component';
+import { ViewPostComponent } from './components/view-post.component';
+import { CatchUpComponent } from './components/catch-up.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,13 +22,16 @@ const routes: Routes = [
   { path: 'selecteduser/:id', component: SingleUserComponent,  },
   { path: 'firebaseapp', component: LayoutComponent, children: [
     { path: '', redirectTo: 'start-up', pathMatch: 'full'},
-    { path: 'start-up/:userId', component: StartUpComponent,  },
+    { path: 'start-up/:userId', component: StartUpComponent, canActivate: [AuthGuard] },
     { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] },
     { path: 'profile/:userID', component: ProfileComponent, canActivate: [AuthGuard] },
-    { path: 'message/:receiverId', component: MessageComponent,  },
+    { path: 'message/:receiverId', component: MessageComponent, canActivate: [AuthGuard] },
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
-    { path: 'pro-upgrade', component: ProUpgradeComponent,  },
+    { path: 'pro-upgrade', component: ProUpgradeComponent, canActivate: [AuthGuard] },
     { path: 'posts', component: PostsComponent,  },
+    { path: 'edit/:postId/post/:userId', component: EditPostComponent,  },
+    { path: 'view/:postId/post/:userId', component: ViewPostComponent,  },
+    { path: 'news/catchup', component: CatchUpComponent,  },
   ]},
   {path: '',  loadChildren:() => import('./authentication/authentication.module').then(module => module.AuthenticationModule)},
 ];

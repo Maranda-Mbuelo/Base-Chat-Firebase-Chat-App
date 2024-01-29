@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, ChangeDetectorRef  } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
 import { IUser } from '../interfaces/user.model';
@@ -22,7 +22,7 @@ export class LayoutComponent implements OnInit {
     isDarkMode : false
   };
 
-  constructor(private authService: AuthService, private firebaseService: FirebaseService, private cdr: ChangeDetectorRef) {}
+  constructor(private authService: AuthService, private router: Router, private firebaseService: FirebaseService, private cdr: ChangeDetectorRef) {}
 
   async ngOnInit(): Promise<void> {
     if (this.authService.userId !== null) {
@@ -46,6 +46,10 @@ export class LayoutComponent implements OnInit {
 
     // Trigger change detection manually
     this.cdr.detectChanges();
+  }
+
+  routeToProfile(): void{
+    this.router.navigate(['selecteduser', this.userId]);
   }
   
 
