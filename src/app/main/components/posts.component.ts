@@ -7,7 +7,6 @@ import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
 import { PostService } from '../services/post.service';
 import { UserService } from '../services/user.service';
-import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-posts',
@@ -174,16 +173,7 @@ export class PostsComponent implements OnInit {
    user$ = new BehaviorSubject<IFetchUser | null>(null);
    textPosts$ = new BehaviorSubject<IPost[]>([]);
    mediaPosts$ = new BehaviorSubject<IMediaPost[]>([]);
-   mergedPost$ = new BehaviorSubject<(IMediaPost | IPost)[]>([
-      {
-         title: "yellow",
-         id: "www",
-         content: "ee",
-         timestamp: Timestamp.now(),
-         likes: 7,
-         images: ['heey']
-      }
-   ]);
+   mergedPost$ = new BehaviorSubject<(IMediaPost | IPost)[]>([]);
    data$ = combineLatest([this.user$, this.textPosts$]).pipe(
    map(([user, textPosts]) => ({ user, textPosts }))
    );
