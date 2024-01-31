@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
       <ul class="space-y-2 font-medium">
         <ng-container *ngFor="let link of upperRoutes">
           <li>
-            <a [routerLink]="link.route" routerLinkActive="active" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <a data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" [routerLink]="link.route" routerLinkActive="active" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
               <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(link.icon)"></div>
               <span class="ms-3">{{ link.name | titlecase }}</span>
             </a>
@@ -21,7 +21,7 @@ import { AuthService } from '../services/auth.service';
        <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
           <ng-container *ngFor="let link of bottomRoutes">
             <li>
-              <a href="#" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+              <a data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" href="#" class="flex items-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
                 <div [innerHTML]="sanitizer.bypassSecurityTrustHtml(link.icon)"></div>
                 <span class="ms-3">{{ link.name | titlecase }}</span>
               </a>

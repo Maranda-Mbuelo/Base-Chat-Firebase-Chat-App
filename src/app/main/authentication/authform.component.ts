@@ -45,30 +45,13 @@ import { TypewriterService } from '../services/typewritter.service';
                 <p class="text-gray-400">
                     or use email your account
                 </p>
-                <form #myForm="ngForm" (ngSubmit)="loginSubmit(myForm.value)" class="gap-2 sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
-                <div class="pb-2 pt-4 relative">
-                    <input
-                        type="email"
-                        id="floating_email"
-                        name="email"
-                        
-                        ngModel
-                        class="block py-2.5 px-0 w-full text-2xl text-white lg:text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-
-                    />
-                    <label
-                        for="floating_email"
-                        class="absolute bottom-4 left-0 mr-28 text-left text-xl text-gray-500 dark:text-gray-400 duration-300 origin-[0] transition-transform transform peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
-                    >
-                        Email
-                    </label>
+                <form #myForm="ngForm" (ngSubmit)="loginSubmit(myForm.value)" class="sm:w-2/3 w-full px-4 lg:px-0 mx-auto">
+                    <div class="pb-2 pt-4">
+                        <input type="email" name="email" placeholder="Email" ngModel class="stPlaceholder block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none">
                     </div>
-
-                    <div class="pb-2 pt-4 relative">
-                        <input type="password" ngModel name="password" id="floating_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                        <label for="floating_password" class="absolute bottom-4 left-0 mr-28 text-left text-xl text-gray-500 dark:text-gray-400 duration-300 origin-[0] transition-transform transform peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Password</label>
+                    <div class="pb-2 pt-4">
+                        <input type="password" name="password" placeholder="Password" ngModel class="sndPlaceholder block w-full p-4 text-lg rounded-sm bg-gray-300 outline-none border-none focus:border-none">
                     </div>
-
                     <div class="text-right text-gray-400 hover:underline hover:text-gray-100">
                         <a href="#" class="stLink"></a>
                     </div>

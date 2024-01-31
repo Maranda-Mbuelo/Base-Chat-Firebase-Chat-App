@@ -29,9 +29,9 @@ const routes: Routes = [
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
     { path: 'pro-upgrade', component: ProUpgradeComponent, canActivate: [AuthGuard] },
     { path: 'posts', component: PostsComponent,  },
-    { path: 'edit/:postId/post/:userId', component: EditPostComponent,  },
+    { path: 'edit/:postId/post/:userId', component: EditPostComponent, canActivate: [AuthGuard] },
     { path: 'view/:postId/post/:userId', component: ViewPostComponent,  },
-    { path: 'news/catchup', component: CatchUpComponent,  },
+    { path: 'news/catchup', component: CatchUpComponent, canActivate: [AuthGuard] },
   ]},
   {path: '',  loadChildren:() => import('./authentication/authentication.module').then(module => module.AuthenticationModule)},
 ];

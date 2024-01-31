@@ -1,10 +1,11 @@
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, catchError, from, map, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, combineLatest, from, map, switchMap, throwError } from 'rxjs';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot, setDoc, increment } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 import { IMediaPost, IPost } from '../interfaces/others.model';
 import { deleteObject } from '@angular/fire/storage';
+import { IFetchUser } from '../interfaces/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,32 @@ export class PostService {
   
 
   constructor(private firestore: Firestore, private ngZone: NgZone) {}
+
+  getAllPosts(): Observable<(IPost | IMediaPost)[]> {
+    return this.getAllUsers().pipe(
+      map((users) => {
+        const allPosts: (IPost | IMediaPost)[] = [];
+ 
+        users.forEach((user) => {
+          const userRegularPosts$ = this.getUserPosts(user.id);
+          const userMediaPosts$ = this.getUserMediaPosts(user.id);
+
+          combineLatest([userRegularPosts$, userMediaPosts$]).subscribe(
+            ([regularPosts, mediaPosts]) => {
+              allPosts.push(...regularPosts, ...mediaPosts);
+            } 
+          );
+        });
+
+        return allPosts;
+      })
+    );
+  }
+
+  getAllUsers() {
+    const collectionDatabase = collection(this.firestore, 'users');
+    return collectionData(collectionDatabase, { idField: 'id' });
+  }
 
   async addPost(post: IPost, userId: string): Promise<string> {
     const collectionDatabase = collection(this.firestore, `users/${userId}/post`);
