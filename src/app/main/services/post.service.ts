@@ -1,11 +1,11 @@
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, catchError, combineLatest, from, map, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, combineLatest, filter, forkJoin, from, map, of, switchMap, throwError } from 'rxjs';
 import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot, setDoc, increment } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
 import { IMediaPost, IPost } from '../interfaces/others.model';
 import { deleteObject } from '@angular/fire/storage';
-import { IFetchUser } from '../interfaces/user.model';
+import { IFetchUser, IUser } from '../interfaces/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,43 @@ export class PostService {
   
 
   constructor(private firestore: Firestore, private ngZone: NgZone) {}
+
+  getPostOwnerByPostId(postId: string): Observable<IUser | undefined> {
+    return this.getAllUsers().pipe(
+      switchMap((users) => {
+        const userObservables: Observable<IUser | undefined>[] = [];
+  
+        users.forEach((user) => {
+          const userPost$ = this.getUserPosts(user.id).pipe(
+            map((posts) => posts.find((post) => post.id === postId))
+          );
+  
+          const userMediaPost$ = this.getUserMediaPosts(user.id).pipe(
+            map((mediaPosts) => mediaPosts.find((mediaPost) => mediaPost.id === postId))
+          );
+  
+          const combined$ = combineLatest([userPost$, userMediaPost$]).pipe(
+            map(([post, mediaPost]) => {
+              if (post || mediaPost) {
+                console.log(user);
+                return user;
+              } else {
+                return undefined;
+              }
+            })
+          );
+  
+          // userObservables.push(combined$);
+        });
+  
+        return forkJoin(userObservables).pipe(
+          map((users) => users.find((user) => user !== undefined))
+        );
+      })
+    );
+  }
+  
+  
 
   getAllPosts(): Observable<(IPost | IMediaPost)[]> {
     return this.getAllUsers().pipe(

@@ -11,9 +11,9 @@ import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-posts',
   template: `
-<div *ngIf="mergedPost$" class="h-screen mt-8 overflow-y-scroll bg-gray-100">
-   <div class="flex flex-col pt-12 lg:flex-row">
-   <ng-container *ngFor="let post of mergedPost$ | async">
+<div *ngIf="mergedPost$ | async" class="h-screen mt-8 overflow-y-scroll bg-gray-100 flex flex-col items-center">
+   <div class="flex flex-col pt-12 w-[70%]">
+      <ng-container *ngFor="let post of mergedPost$ | async">
             <div *ngIf="isMediaPost(post) && post.title !== undefined; else withoutImageTemplate" class="bg-white shadow rounded-lg my-4">
                <ng-container *ngIf="data$ | async as data">
                   <div class="relative">
@@ -109,7 +109,6 @@ import { UserService } from '../services/user.service';
                </ng-container>
             </div>
             <ng-template #withoutImageTemplate let-postIndex="index">
-               hello
                <div class="relative rounded-xl border p-5 shadow-md w-full bg-white my-2">
                   <!-- Button in the top right -->
                   <button (click)="toggleDropdown(post.id)" class="absolute top-4 right-6 p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 dark:focus:ring-gray-600" type="button">
@@ -165,7 +164,7 @@ import { UserService } from '../services/user.service';
   styles: [
   ]
 })
-export class PostsComponent implements OnInit {
+ export class PostsComponent implements OnInit {
 
    userId!: string;
    mainUserId!: string;
@@ -194,7 +193,15 @@ export class PostsComponent implements OnInit {
    }
 
    ngOnInit(): void {
-      
+      const postId = '7znvxOqAS0hjGW0dQFsV';
+      this.postService.getPostOwnerByPostId(postId).subscribe((owner) => {
+         if (owner) {
+           console.log('Post owner:', owner);
+         } else {
+           console.log('Owner not found.');
+         }
+       });
+
     }
 
    isMediaPost(post: IPost | IMediaPost): post is IMediaPost {
