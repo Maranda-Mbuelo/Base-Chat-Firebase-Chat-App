@@ -21,3 +21,15 @@ export interface IMediaPost extends IPost{
     images: Array<string>;
 }
 
+export interface IMiniUser{
+    username: string;
+    image?: string;
+    id: string;
+}
+
+export interface IPostWithUser {
+    id: string;
+    post: IPost | IMediaPost;
+    user: IMiniUser;
+}
+

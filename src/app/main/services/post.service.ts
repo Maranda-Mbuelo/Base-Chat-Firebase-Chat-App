@@ -1,9 +1,9 @@
 import { AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import { Injectable, NgZone } from '@angular/core';
-import { Observable, catchError, combineLatest, filter, forkJoin, from, map, of, switchMap, throwError } from 'rxjs';
-import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, where, getDocs, query, getDoc, DocumentReference, QuerySnapshot, setDoc, increment } from '@angular/fire/firestore';
+import { Observable, combineLatest, forkJoin, map, switchMap} from 'rxjs';
+import { Firestore, collection, addDoc, collectionData, doc, updateDoc, deleteDoc, DocumentData, getDoc, setDoc, increment, query } from '@angular/fire/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL  } from "firebase/storage";
-import { IMediaPost, IPost } from '../interfaces/others.model';
+import { IMediaPost, IMiniUser, IPost, IPostWithUser } from '../interfaces/others.model';
 import { deleteObject } from '@angular/fire/storage';
 import { IFetchUser, IUser } from '../interfaces/user.model';
 
@@ -12,15 +12,12 @@ import { IFetchUser, IUser } from '../interfaces/user.model';
 })
 export class PostService {
 
-  
-
   constructor(private firestore: Firestore, private ngZone: NgZone) {}
 
   getPostOwnerByPostId(postId: string): Observable<IUser | undefined> {
     return this.getAllUsers().pipe(
       switchMap((users) => {
         const userObservables: Observable<IUser | undefined>[] = [];
-  
         users.forEach((user) => {
           const userPost$ = this.getUserPosts(user.id).pipe(
             map((posts) => posts.find((post) => post.id === postId))
@@ -39,19 +36,14 @@ export class PostService {
                 return undefined;
               }
             })
-          );
-  
-          // userObservables.push(combined$);
+          );            
         });
-  
         return forkJoin(userObservables).pipe(
           map((users) => users.find((user) => user !== undefined))
         );
       })
     );
-  }
-  
-  
+  }  
 
   getAllPosts(): Observable<(IPost | IMediaPost)[]> {
     return this.getAllUsers().pipe(
@@ -79,7 +71,7 @@ export class PostService {
     return collectionData(collectionDatabase, { idField: 'id' });
   }
 
-  async addPost(post: IPost, userId: string): Promise<string> {
+  async addPost(post: IPost, userId: string, user: IFetchUser): Promise<string> {
     const collectionDatabase = collection(this.firestore, `users/${userId}/post`);
     // Add a new document to the 'users' collection with the user data
     const docRef = await addDoc(collectionDatabase, post);
@@ -97,11 +89,50 @@ export class PostService {
     const postsCount = doc(this.firestore, `users/${userId}`);
     await updateDoc(postsCount, { postsCount: increment(1) });
 
+    if(user.id){
+      const miniUser: IMiniUser = {
+        id : user.id,
+        username : user.username,
+        image: user.image
+      }
+      this.addToAllPost(post, miniUser, docRef.id);
+    }
 
+    
     return docRef.id;
   }
 
-  async addMediaPost(post: IMediaPost, userId: string): Promise<string> {
+  async addToAllPost(post: IMediaPost | IPost, user: IMiniUser, id: string): Promise<string> {
+    try {
+      const collectionDatabase = collection(this.firestore, `allPosts`);
+  
+      // Add a new document to the 'allPosts' collection with the provided ID and combined data
+      const combinedData = { post, user };
+      const docRef = doc(collectionDatabase, id);
+      await setDoc(docRef, combinedData);
+  
+      // Return the provided ID
+      return id;
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error adding to allPosts:', error);
+      throw error; // Re-throw the error for the caller to handle
+    }
+  }
+
+  getAllPostsWithUsers(): Observable<(IPostWithUser)[]> {
+    const collectionDatabase = collection(this.firestore, 'allPosts');
+
+    return collectionData(query(collectionDatabase)).pipe(
+      map((posts: (DocumentData | (DocumentData & {}))[]) => {
+        return posts.map(post => post as IPostWithUser);
+      })
+    );
+  }
+  
+  
+
+  async addMediaPost(post: IMediaPost, userId: string, user: IFetchUser): Promise<string> {
     const collectionDatabase = collection(this.firestore, `users/${userId}/mediapost`);
     
     // Add a new document to the 'users' collection with the user data
@@ -127,6 +158,15 @@ export class PostService {
     });
 
     // Return the ID of the newly added document
+    if(user.id){
+      const miniUser: IMiniUser = {
+        id : user.id,
+        username : user.username,
+        image: user.image
+      }
+  
+      this.addToAllPost(post, miniUser, docRef.id);
+    }
     return docRef.id;
   }
 

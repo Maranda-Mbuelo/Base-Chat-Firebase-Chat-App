@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { initFlowbite } from 'flowbite';
+import { FirebaseService } from '../services/firebase.service';
+import { AuthService } from '../services/auth.service';
+import { map } from 'rxjs';
+import { IFetchUser } from '../interfaces/user.model';
 
 @Component({
   selector: 'app-messages',
@@ -79,8 +83,31 @@ import { initFlowbite } from 'flowbite';
   ]
 })
 export class MessagesComponent implements OnInit {
+  users: IFetchUser[] = [];
 
-  ngOnInit(): void {
+  constructor(private firebaseService: FirebaseService, private authService: AuthService) {}
+
+  async ngOnInit(): Promise<void> {
     initFlowbite();
+    if (this.authService.userId) {
+      try {
+        const receiverIds = await this.firebaseService.getReceiverIds(this.authService.userId).toPromise();
+        // Iterate through each receiverId and fetch the user data
+        if(receiverIds){
+          for (const id of receiverIds) {
+            const user = await this.firebaseService.getUserById(id);
+            if (user) {
+              this.users.push(user);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+
+    this.users.forEach((user) => {
+      console.log("user: ", user)
+    })
   }
 }

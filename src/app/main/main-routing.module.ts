@@ -15,6 +15,8 @@ import { SingleUserComponent } from './components/single-user.component';
 import { EditPostComponent } from './components/edit-post.component';
 import { ViewPostComponent } from './components/view-post.component';
 import { CatchUpComponent } from './components/catch-up.component';
+import { EditUserComponent } from './components/edit-user.component';
+import { LogoutComponent } from './components/logout.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,14 +24,16 @@ const routes: Routes = [
   { path: 'selecteduser/:id', component: SingleUserComponent,  },
   { path: 'firebaseapp', component: LayoutComponent, children: [
     { path: '', redirectTo: 'start-up', pathMatch: 'full'},
-    { path: 'start-up/:userId', component: StartUpComponent, canActivate: [AuthGuard] },
+    { path: 'start-up/:userId', component: StartUpComponent,  },
     { path: 'messages', component: MessagesComponent, canActivate: [AuthGuard] },
     { path: 'profile/:userID', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'message/:receiverId', component: MessageComponent, canActivate: [AuthGuard] },
     { path: 'users', component: UsersComponent, canActivate: [AuthGuard] },
+    { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard] },
     { path: 'pro-upgrade', component: ProUpgradeComponent, canActivate: [AuthGuard] },
     { path: 'edit/:postId/post/:userId', component: EditPostComponent, canActivate: [AuthGuard] },
     { path: 'view/:postId/post/:userId', component: ViewPostComponent,  },
+    { path: 'edit/user/:userId', component: EditUserComponent,  },
     { path: 'news/catchup', component: CatchUpComponent, canActivate: [AuthGuard] },
     { path: 'posts', component: PostsComponent,  },
   ]},

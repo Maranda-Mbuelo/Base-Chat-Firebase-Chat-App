@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged  } from 'firebase/auth';
 import { FirebaseService } from './../services/firebase.service';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { IUser } from '../interfaces/user.model';
+import { IFetchUser, IUser } from '../interfaces/user.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { initFlowbite, initModals, initPopovers } from 'flowbite';
 
@@ -145,8 +145,6 @@ export class SetupComponent implements OnInit, AfterViewInit {
     this.route.params.subscribe(params => {
       // Get the userId from the route parameters
       this.userUrlId = params['id']; 
-      // Now you can use this.userId in your component
-      console.log('User ID from route: ', this.userUrlId);
     });
   }
 
@@ -229,13 +227,18 @@ export class SetupComponent implements OnInit, AfterViewInit {
                       myUser.email = email;
                       myUser.image = imageUrl; // Use the uploaded image URL here
                       console.log('User :', myUser);
-                      var newUser:IUser = {
+                      var newUser:IFetchUser = {
                         username : myUser.username,
                         firstname : myUser.firstname,
                         lastname : myUser.lastname,
                         email : myUser.email,
                         image : this.uploadedImage,
-                        isDarkMode : myUser.isDarkMode
+                        isDarkMode : myUser.isDarkMode,
+                        followers:[],
+                        following: [],
+                        followersCount: 0,
+                        followingCount: 0,
+                        postsCount: 0
                       }
 
                       console.log('User: ', newUser)

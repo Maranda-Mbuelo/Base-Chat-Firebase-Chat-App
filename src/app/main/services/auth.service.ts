@@ -59,6 +59,7 @@ export class AuthService {
       .then((userCredential) => {
         this.isAuthenticated = true;
         this.userId = userCredential.user.uid;
+        localStorage.setItem("form", JSON.stringify(form));
         this.popupTypeSubject.next('success');
         this.popupMessageSubject.next('Account created successfully! You are being redirected to Home.');
         const user: IUser = {
@@ -69,6 +70,8 @@ export class AuthService {
           image: 'demo image',
           about: 'demo about',
           isDarkMode: false,
+          followers:[],
+          following: []
         };
         
         this.firebaseService.addUser(user)
@@ -101,6 +104,7 @@ export class AuthService {
     const auth = getAuth();
     signOut(auth).then(() => {
       this.router.navigate(['/login']);
+      localStorage.removeItem("form");
       this.isAuthenticated = false;
     }).catch((error) => {
       console.log(error);
@@ -126,5 +130,28 @@ export class AuthService {
         }
       });
     });
+  }
+
+  reLogIn(form: LoginForm) {
+    this.loadingSubject.next(true); // Start loading
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, form.email.toLowerCase(), form.password)
+      .then(async (userCredential) => {
+        this.userId = userCredential.user.uid;
+        this.isAuthenticated = true;
+        this.userId = await this.firebaseService.getUserIdByEmail(form.email);
+        // Here i am delaying the route so that user can read the message!!!!!!
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        this.popupTypeSubject.next('error');
+        this.popupMessageSubject.next('Credentials not found on our database!');
+        this.isAuthenticated = false;
+      })
+      .finally(() => {
+        this.isLoading = false;
+        this.loadingSubject.next(false); // Loading complete
+      });
   }
 }

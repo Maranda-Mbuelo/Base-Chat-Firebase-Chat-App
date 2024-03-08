@@ -10,7 +10,7 @@ export interface IUser {
 }
 
 export interface IFetchUser extends IUser{
-  id: string;
+  id?: string;
   followers: Array<string>;
   following: Array<string>;
   followersCount: number;

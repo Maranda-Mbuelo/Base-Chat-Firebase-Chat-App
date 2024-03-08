@@ -20,6 +20,10 @@ import { EditPostComponent } from './components/edit-post.component';
 import { ViewPostComponent } from './components/view-post.component';
 import { CatchUpComponent } from './components/catch-up.component';
 import { BlockComponent } from './components/block.component';
+import { EditUserComponent } from './components/edit-user.component';
+import { LogoutComponent } from './components/logout.component';
+import { DialogComponent } from './components/dialog.component';
+import { DeactivateComponent } from './components/deactivate.component';
 
 
 @NgModule({
@@ -39,7 +43,11 @@ import { BlockComponent } from './components/block.component';
     EditPostComponent,
     ViewPostComponent,
     CatchUpComponent,
-    BlockComponent
+    BlockComponent,
+    EditUserComponent,
+    LogoutComponent,
+    DialogComponent,
+    DeactivateComponent
   ],
   imports: [
     CommonModule,

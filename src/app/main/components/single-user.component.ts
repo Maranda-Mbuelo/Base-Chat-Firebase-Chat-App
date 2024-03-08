@@ -68,7 +68,7 @@ import { UserService } from '../services/user.service';
          <div class="flex justify-end items-center relative">
             <div class="block">
                <div class="inline relative">
-                  <button type="button" type="button" class="inline-flex items-center relative px-2 rounded-full hover:shadow-lg">
+                  <button type="button" (click)="toggleMenuButtonModal()" class="inline-flex items-center relative px-2 rounded-sm hover:shadow-lg">
                      <svg width="40px" height="40px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -87,7 +87,7 @@ import { UserService } from '../services/user.service';
       <!-- end login -->
    </nav>
    <main *ngIf="data$ | async as data" class="grid grid-cols-1 lg:grid-cols-2 gap-6 my-12 mx-12 w-2xl container px-2 mx-auto">
-      <aside class="h-[85vh] overflow-y-scroll p-2">
+      <aside class="h-auto overflow-y-scroll p-2">
          <div *ngIf="data.user as localUser" class="bg-white shadow rounded-lg p-10">
             <div class="flex flex-col gap-1 text-center items-center">
                <img class="h-32 w-32 bg-white p-2 rounded-full shadow mb-4" [src]="localUser.image" alt="image">
@@ -138,7 +138,7 @@ import { UserService } from '../services/user.service';
                <p class="text-gray-500 text-sm text-center mt-4">{{user.username}} is not following anyone.</p>
             </ng-template>
          </div>
-         <div class="flex bg-white shadow mt-6  rounded-lg p-2">
+         <!-- <div class="flex bg-white shadow mt-6  rounded-lg p-2">
             <img src="https://images.unsplash.com/photo-1439130490301-25e322d88054?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1189&amp;q=80" alt="Just a flower" class=" w-16  object-cover  h-16 rounded-xl">
             <div class="flex flex-col justify-center w-full px-2 py-1">
                <div class="flex justify-between items-center ">
@@ -163,8 +163,8 @@ import { UserService } from '../services/user.service';
                   </div>
                </div>
             </div>
-         </div>
-         <div class="grid mt-5 grid-cols-2  space-x-4 overflow-y-scroll justify-center items-center w-full ">
+         </div> -->
+         <!-- <div class="grid mt-5 grid-cols-2  space-x-4 overflow-y-scroll justify-center items-center w-full ">
             <div class="relative flex flex-col justify-between   bg-white shadow-md rounded-3xl  bg-cover text-gray-800  overflow-hidden cursor-pointer w-full object-cover object-center h-64 my-2" style="background-image:url('https://images.unsplash.com/reserve/8T8J12VQxyqCiQFGa2ct_bahamas-atlantis.jpg?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1050&amp;q=80')">
                <div class="absolute bg-gradient-to-t from-green-400 to-blue-400  opacity-50 inset-0 z-0"></div>
                <div class="relative flex flex-row items-end  h-72 w-full ">
@@ -243,7 +243,7 @@ import { UserService } from '../services/user.service';
                   </div>
                </div>
             </div>
-         </div>
+         </div> -->
       </aside>
       <article class="h-[85vh] overflow-y-scroll">
          <form *ngIf="userId == mainUserId" #myForm="ngForm" (submit)="onAddPost(myForm.value)" class="bg-white shadow rounded-lg mb-6 p-4">
@@ -411,11 +411,12 @@ import { UserService } from '../services/user.service';
                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                               </svg>
                            </span>
-                           <span class="transition ease-out duration-300 hover:bg-gray-50 bg-gray-100 h-8 px-2 py-2 text-center rounded-full text-gray-100 cursor-pointer">
-                              <svg class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                           <span class="transition ease-out duration-300 hover:bg-blue-50 bg-blue-100 w-8 h-8 px-2 py-2 text-center rounded-full text-blue-400 cursor-pointer mr-2">
+                              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                                 <path d="M3 7H1a1 1 0 0 0-1 1v8a2 2 0 0 0 4 0V8a1 1 0 0 0-1-1Zm12.954 0H12l1.558-4.5a1.778 1.778 0 0 0-3.331-1.06A24.859 24.859 0 0 1 6 6.8v9.586h.114C8.223 16.969 11.015 18 13.6 18c1.4 0 1.592-.526 1.88-1.317l2.354-7A2 2 0 0 0 15.954 7Z"/>
                               </svg>
                            </span>
+                           
                         </div>
                      </div>
                      <div class="flex w-full border-t border-gray-100">
@@ -502,6 +503,29 @@ import { UserService } from '../services/user.service';
          </ng-container>
       </article>
    </main>
+
+
+
+   <!-- Main modal -->
+   <div [ngClass]="{'hidden' : isMenuButtonOpen == false}" tabindex="-1" aria-hidden="true" class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <!-- Dimmed overlay -->
+            <div class="fixed top-0 right-0 left-0 bottom-0 bg-black opacity-60"></div>
+            <div class="relative p-4 w-full max-w-4xl mx-auto max-h-full">
+               <!-- Modal content -->
+               <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                  <button (click)="toggleMenuButtonModal()" type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="progress-modal">
+                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                     </svg>
+                     <span class="sr-only">Close modal</span>
+                  </button>
+                  
+               </div>
+            </div>
+
+
+
+
 </div>
   `,
   styles: [
@@ -533,6 +557,7 @@ export class SingleUserComponent implements OnInit {
   );
   isLoading: boolean = false;
   isMediaModalOpen: boolean = false;
+  isMenuButtonOpen: boolean = false;
   imageDoneLoading: boolean = false;
   loadingMessage: string = 'Your Image is Loading, Please wait';
   form = {
@@ -626,11 +651,17 @@ export class SingleUserComponent implements OnInit {
       likes: 0,
     };
 
-    try {
-        const postId = await this.postService.addPost(post, this.userId);
+    const user = await this.firebaseService.getUserById(this.mainUserId)
+
+    if(user) {
+      try {
+        const postId = await this.postService.addPost(post, this.userId, user);
         console.log(`Post added with ID: ${postId}`);
-    } catch (error) {
-        console.error('Error adding post:', error);
+      } catch (error) {
+         console.error('Error adding post:', error);
+      }
+    } else{
+      return;
     }
   }
 
@@ -650,14 +681,18 @@ export class SingleUserComponent implements OnInit {
       images: [this.uploadedImage]
     };
 
-    try {
-      const postId = await this.postService.addMediaPost(post, userId);
-      console.log(`Post added: `, post);
-      console.log(`Post added with ID: ${postId}`);
-    } catch (error) {
-      console.error('Error adding post:', error);
-      // You might want to show an error message to the user
-    }
+    const user = await this.firebaseService.getUserById(this.mainUserId);
+
+    if(user) {
+      try {
+         const postId = await this.postService.addMediaPost(post, userId, user);
+         console.log(`Post added: `, post);
+         console.log(`Post added with ID: ${postId}`);
+       } catch (error) {
+         console.error('Error adding post:', error);
+         // You might want to show an error message to the user
+       }
+    } else{ return }
   }
   
 
@@ -714,6 +749,11 @@ export class SingleUserComponent implements OnInit {
 
   toggleMediaModal(): void{
     this.isMediaModalOpen = !this.isMediaModalOpen;
+  }
+
+
+  toggleMenuButtonModal(): void{
+    this.isMenuButtonOpen = !this.isMenuButtonOpen;
   }
 
   checkButtonText(event: MouseEvent, userForActionsId: string): void{

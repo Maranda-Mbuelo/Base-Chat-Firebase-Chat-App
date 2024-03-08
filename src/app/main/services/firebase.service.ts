@@ -1,4 +1,4 @@
-import { Observable, from, map } from 'rxjs';
+import { Observable, from, map, distinctUntilChanged } from 'rxjs';
 import { IGetMessages, IMessage } from './../interfaces/message.model';
 import { IFetchUser, IUser } from './../interfaces/user.model';
 import { Injectable } from '@angular/core';
@@ -61,15 +61,15 @@ export class FirebaseService {
     }
   }
 
-  updateUser(id: string, data: Partial<IUser>) {
+  updateUser(id: string, data: Partial<IFetchUser>) {
     const docDatabase = doc(this.firestore, 'users', id);
     return updateDoc(docDatabase, data);
   }
 
-  updateUserInformation(id: string, data: Partial<IUser>) {
-    const docDatabase = doc(this.firestore, 'users', id);
-    return updateDoc(docDatabase, data);
-  }
+  // updateUserInformation(id: string, data: Partial<IUser>) {
+  //   const docDatabase = doc(this.firestore, 'users', id);
+  //   return updateDoc(docDatabase, data);
+  // }
 
   async getUserEmailById(userId: string): Promise<string | null> {
     const userDocRef = doc(collection(this.firestore, 'users'), userId);
@@ -147,6 +147,23 @@ export class FirebaseService {
       map((messages: IGetMessages[]) => {
         return messages.filter(message => message.senderId === senderId && message.receiverId === receiverId);
       })
+    );
+  }
+
+  getReceiverIds(senderId: string): Observable<string[]> {
+    const collectionDatabase = collection(this.firestore, 'messages');
+    
+    // Query messages where senderId matches
+    const queryMessages = query(collectionDatabase, where('senderId', '==', senderId));
+  
+    // Fetch all messages and extract unique receiverIds
+    return collectionData(queryMessages, { idField: 'id' }).pipe(
+      map((messages: DocumentData[]) => {
+        // Extract unique receiverIds
+        const receiverIds = messages.map(message => message['receiverId']);
+        return Array.from(new Set(receiverIds)); // Convert to Set to remove duplicates, then back to array
+      }),
+      distinctUntilChanged() // Ensure the observable only emits when receiverIds change
     );
   }
 }
