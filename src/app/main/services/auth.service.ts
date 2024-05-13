@@ -52,11 +52,13 @@ export class AuthService {
 
 
   signUp(form: SignUpForm) {
+    console.log(form);
     this.loadingSubject.next(true); // Start loading
     this.setCookie();
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, form.email.toLowerCase(), form.password)
       .then((userCredential) => {
+        console.log("Success")
         this.isAuthenticated = true;
         this.userId = userCredential.user.uid;
         localStorage.setItem("form", JSON.stringify(form));
@@ -88,8 +90,7 @@ export class AuthService {
           });
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        console.error('Error creating user:', error.code, error.message);
         this.popupTypeSubject.next('error');
         this.popupMessageSubject.next('An error occurred while creating your account. Try Again');
         this.isAuthenticated = false;

@@ -205,6 +205,7 @@ export class AuthformComponent implements AfterViewInit, OnDestroy {
       this.passwordMatched = false;
       return
     }
+    console.log("Executed!")
     this.authService.signUp(formData);
   }
 
